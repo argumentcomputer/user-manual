@@ -9,7 +9,7 @@ So while most Turing-complete programming languages can't generate proofs of the
 
 At a higher level, Lurk is designed as a statically scoped dialect of Lisp, influenced by Scheme and Common Lisp.
 However, the consequences of Lurk being a Lisp aren't limited to its frontend.
-It promotes a direct relationship between Lurk expressions and Lurk data.
+It facilitates a direct relationship between Lurk expressions and Lurk data.
 In fact, Lurk expressions *are* Lurk data.
 We hope to clarify this concept throughout the book.
 
@@ -34,9 +34,16 @@ Whereas the typical circuit compilation approach would have to create a circuit 
 Lurk is currently in Alpha.
 Code that runs in the Lurk Alpha release is expected to also run in Lurk Beta, and eventually Lurk 1.0.
 However, some low-level data representations are anticipated to change, and we will be refactoring the circuit implementation to increase auditability and further our confidence in Lurk's cryptographic security.
-Also note that since Lurk inherits some security properties from the underlying proving system, those who would rely on Lurk should investigate the security and status of Nova itself.
+Also note that since Lurk inherits some security properties from the underlying proving system.
+Those who would rely on Lurk should investigate the security and status of Nova itself.
 
 We encourage early adopters to begin writing real applications taking advantage of Lurk so you can begin to familiarize yourself with the programming model.
 Likewise, we welcome your feedback -- which will help ensure ongoing development meets user need.
 
 Note that Groth16 support is only partial, since no trusted setup has been run. If you wish to use Lurk with Groth16, a trusted setup will be required; and we would not recommend undertaking this until the 1.0 circuit has been released.
+
+### About this book
+
+This book takes a "learn by examples" path, providing just enough information at each step and leaving more fine-grained details for later.
+
+The "Language specification" chapter can be used as a precise reference for experienced Lurk users.

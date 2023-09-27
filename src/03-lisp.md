@@ -62,7 +62,7 @@ user> t
 `nil` carries the semantics of "false".
 
 ```
-user> (eq 1 2)
+user> (= 1 2)
 [3 iterations] => nil
 user> (if nil 1 2)
 [3 iterations] => 2
@@ -71,7 +71,7 @@ user> (if nil 1 2)
 `t` carries the semantics of "true".
 
 ```
-user> (eq 1 1)
+user> (= 1 1)
 [3 iterations] => t
 user> (if t 1 2)
 [3 iterations] => 1
@@ -93,18 +93,172 @@ user> (cons 1 nil)
 [3 iterations] => (1)
 ```
 
-And we can left-expand this list by consing a new element as its head.
+And we can left-expand this list by consing an element as its new head.
 
 ```
 user> (cons 0 (cons 1 nil))
 [6 iterations] => (0 1)
 ```
 
-Thus, within this design, `nil` can be used as the empty list.
+Thus, within this design, `nil` can be used to represent the empty list.
 
-One might think that a list is a basic datum that should be self-evaluating.
-But remember that a list, when subject to evaluation, carries the semantic of a function application.
-So when we say `(cons 1 nil)`, we're inputting a list with three elements: the symbol `cons`, the number `1` and the symbol `nil`.
-Lurk then interprets this as a call to the `cons` built-in operator, with arguments `1` and `nil`, finally producing the list `(1)`.
+To deconstruct a pair, we can use `car` and `cdr`, which return the first and the second element respectively.
 
-There is an entire chapter dedicated to built-in operators. For now, it's enough to know how Lurk expressions are formed.
+```
+user> (car (cons 1 2))
+[5 iterations] => 1
+user> (cdr (cons 1 2))
+[5 iterations] => 2
+```
+
+And in our abstraction of lists, we say that `car` and `cdr` return the list's head and tail respectively.
+
+```
+user> (car (cons 0 (cons 1 nil)))
+[8 iterations] => 0
+user> (cdr (cons 0 (cons 1 nil)))
+[8 iterations] => (1)
+```
+
+By definition, `(car nil)` and `(cdr nil)` return `nil`.
+
+```
+user> (car nil)
+[2 iterations] => nil
+user> (cdr nil)
+[2 iterations] => nil
+```
+
+### Functions
+
+A Lurk function can be created by using the `lambda` built-in operator, which requires a list of arguments and a function body.
+
+```
+user> (lambda (x) (+ x 1))
+[1 iteration] => <FUNCTION (x) (+ x 1)>
+```
+
+Then we can write function applications by using lists, as mentioned before.
+
+```
+user> ((lambda (x) (+ x 1)) 10)
+[7 iterations] => 11
+```
+
+Functions with multiple arguments follow the same input design.
+
+```
+user> ((lambda (x y) (+ x y)) 3 5)
+[14 iterations] => 8
+```
+
+Lurk supports partial applications, so we can apply arguments one by one if we want.
+
+```
+user> (((lambda (x y) (+ x y)) 3) 5)
+[13 iterations] => 8
+```
+
+Functions can also be recursive and call themselves by their names.
+But how do we name functions?
+
+### Bindings
+
+We'll come back to recursive functions in a bit.
+First, let's see how `let` allows us to introduce varible bindings.
+
+```
+user> (let ((a 1)) a)
+[3 iterations] => 1
+```
+
+`let` consumes a list of bindings and the final expression, which can use the introduced variables (or not).
+
+```
+user> 
+(let ((a 1)
+      (b 2)
+      (c 3))
+  (+ a b))
+[15 iterations] => 3
+```
+
+When defining the value bound to a variable, we can use the variables that were previously bound.
+
+```
+user> 
+(let ((a 1)
+      (b (+ a 1)))
+  b)
+[8 iterations] => 2
+```
+
+Later bindings shadow previous ones.
+
+```
+user>
+(let ((a 1)
+      (a 2))
+  a)
+[5 iterations] => 2
+```
+
+And inner bindings shadow outer ones.
+
+```
+user> 
+(let ((a 1))
+  (let ((a 2)) a))
+[5 iterations] => 2
+```
+
+Now we can bind functions to variables.
+
+```
+user>
+(let ((succ (lambda (x) (+ x 1))))
+  (succ 10))
+[9 iterations] => 11
+```
+
+So can we create a looping recursive function yet?
+
+```
+user> 
+(let ((loop (lambda (x) (loop x))))
+  (loop 0))
+Evaluation encountered an error after 8 iterations
+```
+
+In a `let` expression, free variables are expected to be already available by, for instance, being defined on a previous binding.
+
+```
+user> 
+(let ((loop (lambda (x) 42))
+      (loop (lambda (x) (loop x))))
+  (loop 0))
+[13 iterations] => 42
+```
+
+In the example above, the body of the second binding for `loop` simply calls the previous definition of `loop`.
+
+If we want to define recursive functions, we need to use `letrec`.
+
+Warning: the following expression actually loops forever!
+
+```
+user> 
+(letrec ((loop (lambda (x) (loop x))))
+  (loop 0))
+```
+
+And now we can finally write a recursive function that computes the sum of the first `n` numbers.
+
+```
+user> 
+(letrec ((sum (lambda (n) (if (= n 0)
+                              0
+                              (+ n (sum (- n 1)))))))
+  (sum 5))
+[92 iterations] => 15
+```
