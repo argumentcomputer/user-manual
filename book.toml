@@ -4,3 +4,9 @@ language = "en"
 multilingual = false
 src = "src"
 title = "Lurk User Manual"
+
+[output.html]
+git-repository-url = "https://github.com/lurk-lang/user-manual"
+
+[output.linkcheck]
+follow-web-links = true
