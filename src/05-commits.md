@@ -9,7 +9,7 @@ user> (commit 123)
 [2 iterations] => (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
 ```
 
-Now that the Lurk process knows that `(comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)` is a commitment to `123`, it can successfully open the commitment.
+Now Lurk knows that `(comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)` is a commitment to `123` and can successfully open the commitment.
 
 ```
 user> (open (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc))
@@ -70,8 +70,7 @@ user> ((open 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a)
 [12 iterations] => 88
 ```
 
-Note: Lurk proofs that involve opening a functional commitment and applying it to certain arguments won't reveal any additional information about the function's implementation details or the data it carries, *as long as all of its arguments are consumed*.
-If some argument is not consumed, the application will return another function due to auto-currying, revealing its internals.
+Note: Lurk proofs that involve opening a functional commitment and applying it to certain arguments won't reveal any additional information about the function's implementation details or the data it carries, unless the computation halts and returns the resulting function with partially applied arguments.
 
 ### Higher-order functional commitments
 
