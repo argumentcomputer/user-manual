@@ -2,7 +2,7 @@
 
 ## Setup
 
-Clone the [lurk-rs](https://github.com/argumentcomputer/lurk-rs) repository and run the following command inside its folder:
+Clone the [loam](https://github.com/argumentcomputer/loam) repository and run the following command inside its folder:
 
 ```
 $ cargo install --path .
@@ -17,7 +17,7 @@ user>
 ```
 
 Having `lurk` installed can help the reader with experimentation while going through the book.
-More detailed information on the features of the `lurk` binary will be presented on a later chapter.
+More detailed information on the features of the `lurk` app will be presented on a later chapter.
 
 ## Support
 

@@ -6,20 +6,13 @@ We can create a commitment to any Lurk data with `commit`.
 
 ```
 user> (commit 123)
-[2 iterations] => (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+[2 iterations] => #0x3719f5d02845123a80da4f5077c803ba0ce1964e08289a9d020603c1f3c450
 ```
 
-Now Lurk knows that `(comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)` is a commitment to `123` and can successfully open the commitment.
+Now Lurk knows that `#0x3719f5d02845123a80da4f5077c803ba0ce1964e08289a9d020603c1f3c450` is a commitment to `123` and can successfully open the commitment.
 
 ```
-user> (open (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc))
-[4 iterations] => 123
-```
-
-Lurk allows `open` to operate on field elements (so the `(comm ...)` wrapper can be omitted).
-
-```
-user> (open 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+user> (open #0x3719f5d02845123a80da4f5077c803ba0ce1964e08289a9d020603c1f3c450)
 [2 iterations] => 123
 ```
 
@@ -27,27 +20,31 @@ Because Lurk commitments are based on Poseidon hashes (just as all compound data
 This means that Lurk commitments are (computationally) binding.
 
 Lurk also supports explicit hiding commitments.
-For when hiding is unimportant, `commit` creates commitments with a default secret of `0`.
+The hiding *secret* must be a commitment.
 
 ```
-user> (hide 0 123)
-[3 iterations] => (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+user> (hide #0x1 123)
+[3 iterations] => #0x7e14ff1d0f6c3844f57c9120786d54256e73c8f08a80f31d6502d87884b3d4
+user> (hide (commit "foo") 123)
+[4 iterations] => #0x3f347bc88091f809143943d6cd12035d0525827111e8745e49497472477da1
 ```
 
-However, any field element can be used as the secret, which makes Lurk commitments not only binding but also *hiding*.
+For when hiding is unimportant, `commit` creates commitments with a default secret of `#0x0`.
 
 ```
-user> (hide 999 123)
-[3 iterations] => (comm 0x3cb2f9666edb8e4444633e960ed56ef0486ea0c3628428680542e2b55f3bf67f)
+user> (hide #0x0 123)
+[3 iterations] => #0x3719f5d02845123a80da4f5077c803ba0ce1964e08289a9d020603c1f3c450
 ```
 
-Note that the returned commitment is different from the one returned by both `(commit 123)` and `(hide 0 123)`.
-But both commitments open to the same value.
+And all the hashes above open to the same value `123`.
 
 ```
-user> (= (open 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
-         (open 0x3cb2f9666edb8e4444633e960ed56ef0486ea0c3628428680542e2b55f3bf67f))
-[7 iterations] => t
+user> (open #0x3719f5d02845123a80da4f5077c803ba0ce1964e08289a9d020603c1f3c450)
+[2 iterations] => 123
+user> (open #0x7e14ff1d0f6c3844f57c9120786d54256e73c8f08a80f31d6502d87884b3d4)
+[2 iterations] => 123
+user> (open #0x3f347bc88091f809143943d6cd12035d0525827111e8745e49497472477da1)
+[2 iterations] => 123
 ```
 
 ## Functional commitments
@@ -56,21 +53,18 @@ Again, we can commit to *any* Lurk data, including functions.
 
 ```
 user> (commit (lambda (x) (+ 7 (* x x))))
-[2 iterations] => (comm 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a)
+[2 iterations] => #0x84a0ebe63fadc8a5e8b848a644a4af72150b6c11652cdbe862f2ee3ffce614
 ```
 
 The above is a commitment to a function that squares its input then adds seven.
-
-We can construct and evaluate an expression that can only be proven to evaluate to one value: the result of applying the function to a given input, in these examples, 5 and 9.
+Then we can open it and apply arguments as usual.
 
 ```
-user> ((open 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a) 5)
-[12 iterations] => 32
-user> ((open 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a) 9)
-[12 iterations] => 88
+user> ((open #0x84a0ebe63fadc8a5e8b848a644a4af72150b6c11652cdbe862f2ee3ffce614) 5)
+[8 iterations] => 32
+user> ((open #0x84a0ebe63fadc8a5e8b848a644a4af72150b6c11652cdbe862f2ee3ffce614) 9)
+[8 iterations] => 88
 ```
-
-Note: Lurk proofs that involve opening a functional commitment and applying it to certain arguments won't reveal any additional information about the function's implementation details or the data it carries, unless the computation halts and returns the resulting function with partially applied arguments.
 
 ### Higher-order functional commitments
 
@@ -83,16 +77,15 @@ user>
 (let ((secret-data 222)
       (data-interface (lambda (f) (f secret-data))))
   (commit data-interface))
-[7 iterations] => (comm 0x20a1682efabf7b7d83dfe8956b71adb9e47261004cc1e1d612657df425102113)
+[5 iterations] => #0x4668b9badf58209537dbb62e132badc5bb7bbaf137a8daeeef550046634da8
 ```
 
 Now we can open it, applying it to a function that adds `111` to the secret value that the committed function hides.
 
 ```
-user> 
-((open 0x20a1682efabf7b7d83dfe8956b71adb9e47261004cc1e1d612657df425102113)
+user> ((open #0x4668b9badf58209537dbb62e132badc5bb7bbaf137a8daeeef550046634da8)
  (lambda (data) (+ data 111)))
-[14 iterations] => 333
+[10 iterations] => 333
 ```
 
 We coin the term Higher-Order Functional Commitments, and as far as we are aware, Lurk is the first and only extant system enabling this powerful usage in the bare language.
