@@ -1,12 +1,12 @@
 [book]
-authors = ["Lurk Lab"]
+authors = ["Argument"]
 language = "en"
 multilingual = false
 src = "src"
 title = "Lurk User Manual"
 
 [output.html]
-git-repository-url = "https://github.com/lurk-lang/user-manual"
+git-repository-url = "https://github.com/argumentcomputer/user-manual"
 
 [output.linkcheck]
 follow-web-links = true

@@ -2,7 +2,7 @@
 
 ## Setup
 
-Clone the [lurk-rs](https://github.com/lurk-lab/lurk-rs) repository and run the following command inside its folder:
+Clone the [lurk-rs](https://github.com/argumentcomputer/lurk-rs) repository and run the following command inside its folder:
 
 ```
 $ cargo install --path .
@@ -21,5 +21,5 @@ More detailed information on the features of the `lurk` binary will be presented
 
 ## Support
 
-In case of any trouble, we are available on our [Zulip server](https://zulip.lurk-lab.com).
+In case of any trouble, we are available on our [Zulip server](https://zulip.argument.xyz).
 Feel free to join us, start threads and ask questions.
