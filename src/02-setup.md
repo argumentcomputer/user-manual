@@ -2,7 +2,7 @@
 
 ## Setup
 
-Clone the [lurk-rs](https://github.com/argumentcomputer/lurk-rs) repository and run the following command inside its folder:
+Clone the [lurk-rs](https://github.com/argumentcomputer/lurkrs) repository and run the following command inside its folder:
 
 ```
 $ cargo install --path .
