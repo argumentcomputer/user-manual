@@ -1,0 +1,624 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Lurk User Manual</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01-intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="02-setup.html"><strong aria-hidden="true">2.</strong> Setup</a></li><li class="chapter-item expanded "><a href="03-lisp.html"><strong aria-hidden="true">3.</strong> Lurk is a Lisp</a></li><li class="chapter-item expanded "><a href="04-ff.html"><strong aria-hidden="true">4.</strong> Finite fields</a></li><li class="chapter-item expanded "><a href="05-commits.html"><strong aria-hidden="true">5.</strong> Commitments</a></li><li class="chapter-item expanded "><a href="06-packages.html"><strong aria-hidden="true">6.</strong> Packages</a></li><li class="chapter-item expanded "><a href="07-spec.html"><strong aria-hidden="true">7.</strong> Language specification</a></li><li class="chapter-item expanded "><a href="08-binary.html"><strong aria-hidden="true">8.</strong> The lurk binary</a></li><li class="chapter-item expanded "><a href="09-coprocessors.html"><strong aria-hidden="true">9.</strong> Coprocessors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Lurk User Manual</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/argumentcomputer/user-manual" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<h3 id="provable-verifiable-and-turing-complete"><a class="header" href="#provable-verifiable-and-turing-complete">Provable, verifiable and Turing-complete</a></h3>
+<p>Lurk is a Turing-complete programming language whose execution can be proved and verified using zk-SNARKs.
+So while most Turing-complete programming languages can't generate proofs of their correct execution and most zk-SNARK authoring languages aren't Turing-complete, Lurk offers the best of both worlds.</p>
+<h3 id="lurk-is-a-lisp"><a class="header" href="#lurk-is-a-lisp">Lurk is a Lisp</a></h3>
+<p>At a higher level, Lurk is designed as a statically scoped dialect of Lisp, influenced by Scheme and Common Lisp.
+However, the consequences of Lurk being a Lisp aren't limited to its frontend.
+It facilitates a direct relationship between Lurk expressions and Lurk data.
+In fact, Lurk expressions <em>are</em> Lurk data.
+We hope to clarify this concept throughout the book.</p>
+<h3 id="lurks-computational-model"><a class="header" href="#lurks-computational-model">Lurk's computational model</a></h3>
+<p>As its computational model, Lurk implements a CEK machine.
+So, more precisely, a proof of execution for a Lurk program is a proof that Lurk's CEK machine goes from state <em>a</em> to state <em>b</em>, where <em>a</em> encodes the computation that we want to unroll and <em>b</em> qualifies a final state, containing the result of the computation.</p>
+<h3 id="no-compilation-to-circuit"><a class="header" href="#no-compilation-to-circuit">No compilation to circuit</a></h3>
+<p>Lurk is an <em>interpreted</em> language.
+Program authors aren't required to compile their programs to circuits before being able to generate proofs.
+Instead, Lurk implements an <em>universal circuit</em> that can prove the transition from a CEK state to the next.
+These proofs are then <em>folded</em> in order to create a single succint and cryptographic proof.</p>
+<p>This design outlines a striking characteristic of Lurk.
+In a Lurk program that implements a logical fork with an <code>if</code>, the prover only needs to pay for the cost of the path that was actually taken.
+Whereas the typical circuit compilation approach would have to create a circuit that contemplates the constraints for both paths, always.</p>
+<h3 id="disclaimer"><a class="header" href="#disclaimer">Disclaimer</a></h3>
+<p>Lurk is currently in Alpha.
+Code that runs in the Lurk Alpha release is expected to also run in Lurk Beta, and eventually Lurk 1.0.
+However, some low-level data representations are anticipated to change, and we will be refactoring the circuit implementation to increase auditability and further our confidence in Lurk's cryptographic security.
+Also note that since Lurk inherits some security properties from the underlying proving system.
+Those who would rely on Lurk should investigate the security and status of Nova itself.</p>
+<p>We encourage early adopters to begin writing real applications taking advantage of Lurk so you can begin to familiarize yourself with the programming model.
+Likewise, we welcome your feedback -- which will help ensure ongoing development meets user need.</p>
+<p>Note that Groth16 support is only partial, since no trusted setup has been run. If you wish to use Lurk with Groth16, a trusted setup will be required; and we would not recommend undertaking this until the 1.0 circuit has been released.</p>
+<h3 id="about-this-book"><a class="header" href="#about-this-book">About this book</a></h3>
+<p>This book takes a "learn by examples" path, providing just enough information at each step and leaving more fine-grained details for later.</p>
+<p>The "Language specification" chapter can be used as a precise reference for experienced Lurk users.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h1>
+<h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
+<p>Clone the <a href="https://github.com/argumentcomputer/lurk-rs">lurk-rs</a> repository and run the following command inside its folder:</p>
+<pre><code>$ cargo install --path .
+</code></pre>
+<p>This will make the <code>lurk</code> binary globally accessible from your terminal:</p>
+<pre><code>$ lurk
+Lurk REPL welcomes you.
+user&gt; 
+</code></pre>
+<p>Having <code>lurk</code> installed can help the reader with experimentation while going through the book.
+More detailed information on the features of the <code>lurk</code> binary will be presented on a later chapter.</p>
+<h2 id="support"><a class="header" href="#support">Support</a></h2>
+<p>In case of any trouble, we are available on our <a href="https://zulip.argument.xyz">Zulip server</a>.
+Feel free to join us, start threads and ask questions.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lurk-is-a-lisp-1"><a class="header" href="#lurk-is-a-lisp-1">Lurk is a Lisp</a></h1>
+<p>Since Lurk is a Lisp, it has practically no syntax and expressions can be formed with simple rules.</p>
+<p>The expression <code>3</code> is self-evaluating.</p>
+<pre><code>user&gt; 3
+[1 iteration] =&gt; 3
+</code></pre>
+<p>When an expression is evaluated, you should see a response with the result and an iteration count, in this case, 1.
+You can think of this as representing the "cost" or number of "clock cycles" required to evaluate the expression.
+In the simplest case of a self-evaluating expression, only a single iteration is required.</p>
+<p>Characters and strings are also self-evaluating.</p>
+<pre><code>user&gt; 'a'
+[1 iteration] =&gt; 'a'
+user&gt; "abc"
+[1 iteration] =&gt; "abc"
+</code></pre>
+<p>Lists are evaluated by treating the first element as a potential function (more on functions later) and the rest as its arguments.</p>
+<pre><code>user&gt; (+ 2 3)
+[3 iterations] =&gt; 5
+</code></pre>
+<p>Technically, <code>+</code> is a built-in operator: it does not evaluate to a Lurk function but behaves like one here.</p>
+<p>Built-in operators cannot be independently evaluated.</p>
+<pre><code>user&gt; +
+Evaluation encountered an error after 1 iteration
+</code></pre>
+<p>A list whose first element is neither a built-in operator nor evaluates to a function yields an error when evaluated.</p>
+<pre><code>user&gt; (1 2 3)
+Evaluation encountered an error after 1 iteration
+</code></pre>
+<p>This is because lists are evaluated by first evaluating each element of the list (in order), then treating the first result as a function to be applied to the remaining.
+The case above triggers an error because the number <code>1</code> does not name a function nor an operator.</p>
+<h2 id="nil-and-t"><a class="header" href="#nil-and-t"><code>nil</code> and <code>t</code></a></h2>
+<p><code>nil</code> and <code>t</code> are self-evaluating symbols.</p>
+<pre><code>user&gt; nil
+[1 iteration] =&gt; nil
+user&gt; t
+[1 iteration] =&gt; t
+</code></pre>
+<p><code>nil</code> carries the semantics of "false".</p>
+<pre><code>user&gt; (= 1 2)
+[3 iterations] =&gt; nil
+user&gt; (if nil 1 2)
+[3 iterations] =&gt; 2
+</code></pre>
+<p><code>t</code> carries the semantics of "true".</p>
+<pre><code>user&gt; (= 1 1)
+[3 iterations] =&gt; t
+user&gt; (if t 1 2)
+[3 iterations] =&gt; 1
+</code></pre>
+<h2 id="more-on-lists"><a class="header" href="#more-on-lists">More on lists</a></h2>
+<p>Pairs are constructed with <code>cons</code>, and their elements are separated by a <code>.</code> when printed.</p>
+<pre><code>user&gt; (cons 1 2)
+[3 iterations] =&gt; (1 . 2)
+</code></pre>
+<p>A pair whose second element is <code>nil</code> is said to form a list with one element.</p>
+<pre><code>user&gt; (cons 1 nil)
+[3 iterations] =&gt; (1)
+</code></pre>
+<p>And we can left-expand this list by consing an element as its new head.</p>
+<pre><code>user&gt; (cons 0 (cons 1 nil))
+[6 iterations] =&gt; (0 1)
+</code></pre>
+<p>Thus, within this design, <code>nil</code> can be used to represent the empty list.</p>
+<p>To deconstruct a pair, we can use <code>car</code> and <code>cdr</code>, which return the first and the second element respectively.</p>
+<pre><code>user&gt; (car (cons 1 2))
+[5 iterations] =&gt; 1
+user&gt; (cdr (cons 1 2))
+[5 iterations] =&gt; 2
+</code></pre>
+<p>And in our abstraction of lists, we say that <code>car</code> and <code>cdr</code> return the list's head and tail respectively.</p>
+<pre><code>user&gt; (car (cons 0 (cons 1 nil)))
+[8 iterations] =&gt; 0
+user&gt; (cdr (cons 0 (cons 1 nil)))
+[8 iterations] =&gt; (1)
+</code></pre>
+<p>By definition, <code>(car nil)</code> and <code>(cdr nil)</code> return <code>nil</code>.</p>
+<pre><code>user&gt; (car nil)
+[2 iterations] =&gt; nil
+user&gt; (cdr nil)
+[2 iterations] =&gt; nil
+</code></pre>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<p>A Lurk function can be created by using the <code>lambda</code> built-in operator, which requires a list of arguments and a function body.</p>
+<pre><code>user&gt; (lambda (x) (+ x 1))
+[1 iteration] =&gt; &lt;FUNCTION (x) (+ x 1)&gt;
+</code></pre>
+<p>Then we can write function applications by using lists, as mentioned before.</p>
+<pre><code>user&gt; ((lambda (x) (+ x 1)) 10)
+[7 iterations] =&gt; 11
+</code></pre>
+<p>Functions with multiple arguments follow the same input design.</p>
+<pre><code>user&gt; ((lambda (x y) (+ x y)) 3 5)
+[14 iterations] =&gt; 8
+</code></pre>
+<p>Lurk supports partial applications, so we can apply arguments one by one if we want.</p>
+<pre><code>user&gt; (((lambda (x y) (+ x y)) 3) 5)
+[13 iterations] =&gt; 8
+</code></pre>
+<p>Functions can also be recursive and call themselves by their names.
+But how do we name functions?</p>
+<h3 id="bindings"><a class="header" href="#bindings">Bindings</a></h3>
+<p>We'll come back to recursive functions in a bit.
+First, let's see how <code>let</code> allows us to introduce varible bindings.</p>
+<pre><code>user&gt; (let ((a 1)) a)
+[3 iterations] =&gt; 1
+</code></pre>
+<p><code>let</code> consumes a list of bindings and the final expression, which can use the introduced variables (or not).</p>
+<pre><code>user&gt; 
+(let ((a 1)
+      (b 2)
+      (c 3))
+  (+ a b))
+[15 iterations] =&gt; 3
+</code></pre>
+<p>When defining the value bound to a variable, we can use the variables that were previously bound.</p>
+<pre><code>user&gt; 
+(let ((a 1)
+      (b (+ a 1)))
+  b)
+[8 iterations] =&gt; 2
+</code></pre>
+<p>Later bindings shadow previous ones.</p>
+<pre><code>user&gt;
+(let ((a 1)
+      (a 2))
+  a)
+[5 iterations] =&gt; 2
+</code></pre>
+<p>And inner bindings shadow outer ones.</p>
+<pre><code>user&gt; 
+(let ((a 1))
+  (let ((a 2)) a))
+[5 iterations] =&gt; 2
+</code></pre>
+<p>Now we can bind functions to variables.</p>
+<pre><code>user&gt;
+(let ((succ (lambda (x) (+ x 1))))
+  (succ 10))
+[9 iterations] =&gt; 11
+</code></pre>
+<p>So can we create a looping recursive function yet?</p>
+<pre><code>user&gt; 
+(let ((loop (lambda (x) (loop x))))
+  (loop 0))
+Evaluation encountered an error after 8 iterations
+</code></pre>
+<p>In a <code>let</code> expression, free variables are expected to be already available by, for instance, being defined on a previous binding.</p>
+<pre><code>user&gt; 
+(let ((loop (lambda (x) 42))
+      (loop (lambda (x) (loop x))))
+  (loop 0))
+[13 iterations] =&gt; 42
+</code></pre>
+<p>In the example above, the body of the second binding for <code>loop</code> simply calls the previous definition of <code>loop</code>.</p>
+<p>If we want to define recursive functions, we need to use <code>letrec</code>.</p>
+<p>Warning: the following expression actually loops forever!</p>
+<pre><code>user&gt; 
+(letrec ((loop (lambda (x) (loop x))))
+  (loop 0))
+</code></pre>
+<p>And now we can finally write a recursive function that computes the sum of the first <code>n</code> numbers.</p>
+<pre><code>user&gt; 
+(letrec ((sum-upto (lambda (n) (if (= n 0)
+                                   0
+                                   (+ n (sum-upto (- n 1)))))))
+  (sum-upto 5))
+[92 iterations] =&gt; 15
+</code></pre>
+<h2 id="higher-order-functions"><a class="header" href="#higher-order-functions">Higher-order functions</a></h2>
+<p>Lurk supports <a href="https://en.wikipedia.org/wiki/Higher-order_function">Higher-order functions</a>.
+That is, Lurk functions can receive functions as input and return functions as output, allowing for a wide range of expressive functional programming idioms.</p>
+<pre><code>user&gt; 
+(letrec ((map (lambda (f list)
+                (if (eq list nil)
+                    nil
+                    (cons (f (car list))
+                          (map f (cdr list))))))
+         (square (lambda (x) (* x x))))
+  (map square '(1 2 3 4 5)))
+[186 iterations] =&gt; (1 4 9 16 25)
+</code></pre>
+<p>By the way, how was the list <code>(1 2 3 4 5)</code> produced so easily?</p>
+<h2 id="quoting"><a class="header" href="#quoting">Quoting</a></h2>
+<p>The <code>quote</code> built-in operator skips the reduction of its argument and returns it <em>as it is</em>.</p>
+<p>We've seen that trying to reduce <code>(1 2 3)</code> doesn't work.
+But if we want Lurk not to face that list as a function application, we can use <em>quoting</em>.</p>
+<pre><code>user&gt; (quote (1 2 3))
+[1 iteration] =&gt; (1 2 3)
+</code></pre>
+<p>And we can use <code>'</code> as syntax sugar for brevity.</p>
+<pre><code>user&gt; '(1 2 3)
+[1 iteration] =&gt; (1 2 3)
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="finite-fields"><a class="header" href="#finite-fields">Finite fields</a></h1>
+<p>Lurk proofs are implemented in arithmetic circuits whose fundamental numeric type is the finite field.
+This is because zk-SNARKs use elliptic curves for their cryptographic properties.
+In practice, this means that arithmetic is performed modulo some large prime (the <em>order</em> of the field).</p>
+<p>Lurk’s primary target is the <a href="https://github.com/microsoft/Nova">Nova</a> proving system, which is a recursive SNARK.
+This requires a <a href="https://eprint.iacr.org/2014/595.pdf">curve cycle</a>, and by default we use the <a href="https://electriccoin.co/blog/the-pasta-curves-for-halo-2-and-beyond/">Pasta curves</a>.
+What this means for programmers, is that Lurk’s default numbers are elements of <code>Fq</code>, the <a href="https://github.com/zcash/pasta_curves/blob/main/src/fields/fq.rs">scalar field of Pallas</a>.</p>
+<pre><code>user&gt; (- 0 1)
+[3 iterations] =&gt; 0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000000
+</code></pre>
+<p>The result, <code>0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000000</code>, is the largest value representable in <code>Fq</code>.
+That is to say, it is one less than <code>q</code>, the <a href="https://github.com/zcash/pasta_curves/blob/main/src/fields/fq.rs#L21">modulus of <code>Fq</code></a>.</p>
+<pre><code>user&gt; (+ 0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000000 1)
+[3 iterations] =&gt; 0
+</code></pre>
+<p>Division works in a finite field,</p>
+<pre><code>user&gt; (/ 10 2)
+[3 iterations] =&gt; 5
+</code></pre>
+<p>but the results are not intuitive if the dividend is not a multiple of the divisor.</p>
+<pre><code>user&gt; (/ 5 6)
+[3 iterations] =&gt; 0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab061197f56ee1c24ecb67c8580000001
+</code></pre>
+<p>However, since division is implemented as the product with the multiplicative inverse, arithmetic manipulation works as expected, which is the point.</p>
+<pre><code>user&gt; (* (/ 5 6) 6)
+[6 iterations] =&gt; 5
+</code></pre>
+<p>You can use fractional notation as syntax sugar.
+The arithmetic operation happens at parse time and Lurk's CEK machine just needs to handle a self-evaluating number.</p>
+<pre><code>user&gt; 5/6
+[1 iteration] =&gt; 0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab061197f56ee1c24ecb67c8580000001
+</code></pre>
+<p>The same result as a sum.</p>
+<pre><code>user&gt; (+ 1/3 1/2)
+[3 iterations] =&gt; 0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab061197f56ee1c24ecb67c8580000001
+user&gt; (= (+ 1/3 1/2) 5/6)
+[6 iterations] =&gt; t
+</code></pre>
+<h2 id="ordering"><a class="header" href="#ordering">Ordering</a></h2>
+<p>Lurk defines an ordering of field elements, but take note that since finite-field arithmetic is modular, there must be a counter-intuitive case.</p>
+<pre><code>user&gt; 
+(let ((largest-unsigned (- 0 1))
+      (most-positive (/ largest-unsigned 2))
+      (most-negative (+ 1 most-positive)))
+  (&lt; most-negative most-positive))
+[21 iterations] =&gt; t
+</code></pre>
+<p>Above, the most-negative number is produced by adding one to the most-positive.
+If we imagine the elements of the finite field on a line, it would look like this:</p>
+<pre><code>|-------------------------||--------------------------|
+0            most-positive┘└most-negative      largest-unsigned
+</code></pre>
+<p>So the seemingly large number <code>largest-unsigned</code> actually compares as <em>less than zero</em>.</p>
+<pre><code>user&gt; (&lt; 0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000000 0)
+[3 iterations] =&gt; t
+</code></pre>
+<p>And similarly to the fractional notation, Lurk provides a negative-number syntax.</p>
+<pre><code>user&gt; -1
+[1 iteration] =&gt; 0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000000
+</code></pre>
+<p>Using extended numeric syntax, it’s easy to remember how to express the most negative and most positive field elements.</p>
+<pre><code>user&gt; 
+(let ((most-positive -1/2)
+      (most-negative 1/2))
+  (= most-negative (+ 1 most-positive)))
+[13 iterations] =&gt; t
+</code></pre>
+<blockquote>
+<p>-1/2 + 1 = 1/2</p>
+</blockquote>
+<p>Although Lurk’s field-element ordering allows for sorting and comprehensible comparisons between "small" (i.e. less than <code>most-positive</code>) field elements, elements derived from operations which overflow will violate expectations.
+This follows from the fact that finite fields are not <a href="https://en.wikipedia.org/wiki/Ordered_field">ordered fields</a>.
+Nevertheless, when an application knows the domain of its operations is restricted to "small" field elements, or when an opaque consistent ordering is required, Lurk’s native comparisons can be useful.</p>
+<p>But please note that use of fractional syntax does not yield "real" fractions.
+The resulting field elements do not always compare as expected.</p>
+<pre><code>user&gt; (&lt; 3/4 7/8)
+[3 iterations] =&gt; nil
+</code></pre>
+<h2 id="unsigned-integers"><a class="header" href="#unsigned-integers">Unsigned integers</a></h2>
+<p>Although encoded with finite field elements, unsigned integers are supported by Lurk out of the box.</p>
+<pre><code>user&gt; 3u64
+[1 iteration] =&gt; 3u64
+</code></pre>
+<p>And they exhibit the roundtripping properties we'd expect.</p>
+<pre><code>user&gt; (- 0u64 1u64)
+[3 iterations] =&gt; 18446744073709551615u64
+user&gt; (+ 18446744073709551615u64 1u64)
+[3 iterations] =&gt; 0u64
+</code></pre>
+<p>Unsigned integers also enable a well-behaved modulus operation.</p>
+<pre><code>user&gt; (% 8u64 3u64)
+[3 iterations] =&gt; 2u64
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="commitments"><a class="header" href="#commitments">Commitments</a></h1>
+<p>Lurk has built-in support for <a href="https://en.wikipedia.org/wiki/Commitment_scheme">cryptographic commitments</a>.</p>
+<p>We can create a commitment to any Lurk data with <code>commit</code>.</p>
+<pre><code>user&gt; (commit 123)
+[2 iterations] =&gt; (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+</code></pre>
+<p>Now Lurk knows that <code>(comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)</code> is a commitment to <code>123</code> and can successfully open the commitment.</p>
+<pre><code>user&gt; (open (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc))
+[4 iterations] =&gt; 123
+</code></pre>
+<p>Lurk allows <code>open</code> to operate on field elements (so the <code>(comm ...)</code> wrapper can be omitted).</p>
+<pre><code>user&gt; (open 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+[2 iterations] =&gt; 123
+</code></pre>
+<p>Because Lurk commitments are based on Poseidon hashes (just as all compound data in Lurk is), it is computationally infeasible to discover a second preimage to the digest represented by a commitment.
+This means that Lurk commitments are (computationally) binding.</p>
+<p>Lurk also supports explicit hiding commitments.
+For when hiding is unimportant, <code>commit</code> creates commitments with a default secret of <code>0</code>.</p>
+<pre><code>user&gt; (hide 0 123)
+[3 iterations] =&gt; (comm 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+</code></pre>
+<p>However, any field element can be used as the secret, which makes Lurk commitments not only binding but also <em>hiding</em>.</p>
+<pre><code>user&gt; (hide 999 123)
+[3 iterations] =&gt; (comm 0x3cb2f9666edb8e4444633e960ed56ef0486ea0c3628428680542e2b55f3bf67f)
+</code></pre>
+<p>Note that the returned commitment is different from the one returned by both <code>(commit 123)</code> and <code>(hide 0 123)</code>.
+But both commitments open to the same value.</p>
+<pre><code>user&gt; (= (open 0x2937881eff06c2bcc2c8c1fa0818ae3733c759376f76fc10b7439269e9aaa9bc)
+         (open 0x3cb2f9666edb8e4444633e960ed56ef0486ea0c3628428680542e2b55f3bf67f))
+[7 iterations] =&gt; t
+</code></pre>
+<h2 id="functional-commitments"><a class="header" href="#functional-commitments">Functional commitments</a></h2>
+<p>Again, we can commit to <em>any</em> Lurk data, including functions.</p>
+<pre><code>user&gt; (commit (lambda (x) (+ 7 (* x x))))
+[2 iterations] =&gt; (comm 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a)
+</code></pre>
+<p>The above is a commitment to a function that squares its input then adds seven.</p>
+<p>We can construct and evaluate an expression that can only be proven to evaluate to one value: the result of applying the function to a given input, in these examples, 5 and 9.</p>
+<pre><code>user&gt; ((open 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a) 5)
+[12 iterations] =&gt; 32
+user&gt; ((open 0x01ae855385a7e199ab9ec59caa456a9d25b95024dd968145dc7e2327f0cbda9a) 9)
+[12 iterations] =&gt; 88
+</code></pre>
+<p>Note: Lurk proofs that involve opening a functional commitment and applying it to certain arguments won't reveal any additional information about the function's implementation details or the data it carries, unless the computation halts and returns the resulting function with partially applied arguments.</p>
+<h3 id="higher-order-functional-commitments"><a class="header" href="#higher-order-functional-commitments">Higher-order functional commitments</a></h3>
+<p>Higher-order functions are no exceptions and can be committed to in the same manner.</p>
+<p>Here, we commit to a function that receives a function as input and applies it to a secret internal value.</p>
+<pre><code>user&gt; 
+(let ((secret-data 222)
+      (data-interface (lambda (f) (f secret-data))))
+  (commit data-interface))
+[7 iterations] =&gt; (comm 0x20a1682efabf7b7d83dfe8956b71adb9e47261004cc1e1d612657df425102113)
+</code></pre>
+<p>Now we can open it, applying it to a function that adds <code>111</code> to the secret value that the committed function hides.</p>
+<pre><code>user&gt; 
+((open 0x20a1682efabf7b7d83dfe8956b71adb9e47261004cc1e1d612657df425102113)
+ (lambda (data) (+ data 111)))
+[14 iterations] =&gt; 333
+</code></pre>
+<p>We coin the term Higher-Order Functional Commitments, and as far as we are aware, Lurk is the first and only extant system enabling this powerful usage in the bare language.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="packages"><a class="header" href="#packages">Packages</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="language-specification"><a class="header" href="#language-specification">Language specification</a></h1>
+<h2 id="built-in-operators"><a class="header" href="#built-in-operators">Built-in operators</a></h2>
+<h2 id="meta-commands"><a class="header" href="#meta-commands">Meta commands</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="the-lurk-binary"><a class="header" href="#the-lurk-binary">The <code>lurk</code> binary</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="coprocessors"><a class="header" href="#coprocessors">Coprocessors</a></h1>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
