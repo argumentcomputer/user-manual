@@ -1,4 +1,4 @@
-name: CI
+name: Build and deploy
 
 on:
   pull_request:
@@ -18,3 +18,23 @@ jobs:
       - name: Install mdbook-linkcheck
         uses: taiki-e/install-action@mdbook-linkcheck
       - run: mdbook build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./book
+          retention-days: 1
+
+  deploy:
+    if: github.ref_name == 'main' && github.event_name == 'push'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
