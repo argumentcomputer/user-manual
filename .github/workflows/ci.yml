@@ -18,10 +18,12 @@ jobs:
       - name: Install mdbook-linkcheck
         uses: taiki-e/install-action@mdbook-linkcheck
       - run: mdbook build
+      # Note: Using `mdbook-linkcheck` splits the `mdbook build` output into
+      # `html` and `linkcheck`, so we only deploy the former
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./book
+          path: ./book/html
           retention-days: 1
 
   deploy:
