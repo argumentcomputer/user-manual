@@ -7,5 +7,5 @@
 - [Commitments](05-commits.md)
 - [Packages](06-packages.md)
 - [Language specification](07-spec.md)
-- [The `lurk` app](08-app.md)
+- [The REPL](08-repl.md)
 - [Stepping up](09-advanced.md)
