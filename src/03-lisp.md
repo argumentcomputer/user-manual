@@ -93,7 +93,8 @@ user> (cons 1 nil)
 [3 iterations] => (1)
 ```
 
-And we can left-expand this list by consing an element as its new head.
+Note that `nil` is elided when printing lists.
+We can left-expand this list by consing an element as its new head.
 
 ```
 user> (cons 0 (cons 1 nil))
@@ -131,7 +132,7 @@ user> (cdr nil)
 
 ## Functions
 
-A Lurk function can be created by using the `lambda` built-in operator, which requires a list of arguments and a function body.
+A Lurk function can be created by using the `lambda` built-in operator, which requires a list of arguments and a body.
 
 ```
 user> (lambda (x) (+ x 1))
@@ -158,6 +159,17 @@ Lurk supports partial applications, so we can apply arguments one by one if we w
 user> (((lambda (x y) (+ x y)) 3) 5)
 [8 iterations] => 8
 ```
+
+A function may also be defined to not need any arguments.
+
+```
+user> (lambda () nil)
+[1 iteration] => <Fun () nil>
+user> ((lambda () nil))
+[3 iterations] => nil
+```
+
+Note that the second expression actually calls the function.
 
 Functions can also be recursive and call themselves by their names.
 But how do we name functions?
@@ -221,23 +233,24 @@ user>
 [8 iterations] => 11
 ```
 
-So can we create a looping recursive function yet?
+So, can we create a looping recursive function yet?
 
 ```
 user> 
-(let ((loop (lambda (x) (loop x))))
-  (loop 0))
-[7 iterations] => <Err ApplyNonFunc>
+(let ((loop (lambda () (loop))))
+  (loop))
+[6 iterations] => <Err UnboundVar>
 ```
 
 In a `let` expression, free variables are expected to be already available by, for instance, being defined on a previous binding.
+If we try to call `loop` when defining `loop`, it will be unbound.
 
 ```
 user> 
-(let ((not-a-loop (lambda (x) 42))
-      (not-a-loop (lambda (x) (not-a-loop x))))
-  (not-a-loop 0))
-[10 iterations] => 42
+(let ((not-a-loop (lambda () 42))
+      (not-a-loop (lambda () (not-a-loop))))
+  (not-a-loop))
+[8 iterations] => 42
 ```
 
 In the example above, the body of the second binding for `not-a-loop` simply calls the previous definition of `not-a-loop`.
@@ -246,8 +259,8 @@ If we want to define recursive functions, we need to use `letrec`.
 
 ```
 user> 
-(letrec ((loop (lambda (x) (loop x))))
-  (loop 0))
+(letrec ((loop (lambda () (loop))))
+  (loop))
 Error: Loop detected
 ```
 
