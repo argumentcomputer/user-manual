@@ -32,14 +32,25 @@ user> (- 0n 1n)
 
 So, to write stable Lurk code, use finite field elements only if you are sure that those values won't grow too much.
 
-### Commitments
+### Big nums
 
-These are cryptographic hashes aiming at 256-bit security.
-Regular arithmetic operations for them are not defined, but Lurk does provide a total order for them!
+Numbers large enough to represent the domain of approximately 256-bit hash digests.
 
 ```
-user> (< #0x0 #0x1)
-[3 iterations] => t
+user> #0x1
+[1 iteration] => #0x1
+user> #0x4668b9badf58209537dbb62e132badc5bb7bbaf137a8daeeef550046634da8
+[1 iteration] => #0x4668b9badf58209537dbb62e132badc5bb7bbaf137a8daeeef550046634da8
+```
+
+### Commitments
+
+Actual cryptographic commitments to Lurk data, as we shall see in the next chapter.
+It has the same domain range of big nums.
+
+```
+user> (comm #0x0)
+[2 iterations] => (comm #0x0)
 ```
 
 ### Characters
