@@ -8,3 +8,4 @@
 - [Packages](06-packages.md)
 - [Language specification](07-spec.md)
 - [The `lurk` app](08-app.md)
+- [Stepping up](09-advanced.md)
