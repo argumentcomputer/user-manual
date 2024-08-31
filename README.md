@@ -1,4 +1,4 @@
-# Lurk's User Manual
+# Lurk User Manual
 
 This repository contains the content for the *Lurk User Manual*.
 

@@ -35,14 +35,14 @@ Built-in operators cannot be independently evaluated.
 
 ```
 user> +
-Evaluation encountered an error after 1 iteration
+[1 iteration] => <Err NonConstantBuiltin>
 ```
 
 A list whose first element is neither a built-in operator nor evaluates to a function yields an error when evaluated.
 
 ```
 user> (1 2 3)
-Evaluation encountered an error after 1 iteration
+[2 iterations] => <Err ApplyNonFunc>
 ```
 
 This is because lists are evaluated by first evaluating each element of the list (in order), then treating the first result as a function to be applied to the remaining.
@@ -72,7 +72,7 @@ user> (if nil 1 2)
 
 ```
 user> (= 1 1)
-[3 iterations] => t
+[2 iterations] => t
 user> (if t 1 2)
 [3 iterations] => 1
 ```
@@ -93,11 +93,12 @@ user> (cons 1 nil)
 [3 iterations] => (1)
 ```
 
-And we can left-expand this list by consing an element as its new head.
+Note that `nil` is elided when printing lists.
+We can left-expand this list by consing an element as its new head.
 
 ```
 user> (cons 0 (cons 1 nil))
-[6 iterations] => (0 1)
+[5 iterations] => (0 1)
 ```
 
 Thus, within this design, `nil` can be used to represent the empty list.
@@ -106,18 +107,18 @@ To deconstruct a pair, we can use `car` and `cdr`, which return the first and th
 
 ```
 user> (car (cons 1 2))
-[5 iterations] => 1
+[4 iterations] => 1
 user> (cdr (cons 1 2))
-[5 iterations] => 2
+[4 iterations] => 2
 ```
 
 And in our abstraction of lists, we say that `car` and `cdr` return the list's head and tail respectively.
 
 ```
 user> (car (cons 0 (cons 1 nil)))
-[8 iterations] => 0
+[6 iterations] => 0
 user> (cdr (cons 0 (cons 1 nil)))
-[8 iterations] => (1)
+[6 iterations] => (1)
 ```
 
 By definition, `(car nil)` and `(cdr nil)` return `nil`.
@@ -131,33 +132,44 @@ user> (cdr nil)
 
 ## Functions
 
-A Lurk function can be created by using the `lambda` built-in operator, which requires a list of arguments and a function body.
+A Lurk function can be created by using the `lambda` built-in operator, which requires a list of arguments and a body.
 
 ```
 user> (lambda (x) (+ x 1))
-[1 iteration] => <FUNCTION (x) (+ x 1)>
+[1 iteration] => <Fun (x) (+ x 1)>
 ```
 
 Then we can write function applications by using lists, as mentioned before.
 
 ```
 user> ((lambda (x) (+ x 1)) 10)
-[7 iterations] => 11
+[6 iterations] => 11
 ```
 
 Functions with multiple arguments follow the same input design.
 
 ```
 user> ((lambda (x y) (+ x y)) 3 5)
-[14 iterations] => 8
+[7 iterations] => 8
 ```
 
 Lurk supports partial applications, so we can apply arguments one by one if we want.
 
 ```
 user> (((lambda (x y) (+ x y)) 3) 5)
-[13 iterations] => 8
+[8 iterations] => 8
 ```
+
+A function may also be defined to not need any arguments.
+
+```
+user> (lambda () nil)
+[1 iteration] => <Fun () nil>
+user> ((lambda () nil))
+[3 iterations] => nil
+```
+
+Note that the second expression actually calls the function.
 
 Functions can also be recursive and call themselves by their names.
 But how do we name functions?
@@ -180,7 +192,7 @@ user>
       (b 2)
       (c 3))
   (+ a b))
-[15 iterations] => 3
+[7 iterations] => 3
 ```
 
 When defining the value bound to a variable, we can use the variables that were previously bound.
@@ -190,7 +202,7 @@ user>
 (let ((a 1)
       (b (+ a 1)))
   b)
-[8 iterations] => 2
+[6 iterations] => 2
 ```
 
 Later bindings shadow previous ones.
@@ -200,7 +212,7 @@ user>
 (let ((a 1)
       (a 2))
   a)
-[5 iterations] => 2
+[4 iterations] => 2
 ```
 
 And inner bindings shadow outer ones.
@@ -218,38 +230,38 @@ Now we can bind functions to variables.
 user>
 (let ((succ (lambda (x) (+ x 1))))
   (succ 10))
-[9 iterations] => 11
+[8 iterations] => 11
 ```
 
-So can we create a looping recursive function yet?
+So, can we create a looping recursive function yet?
 
 ```
 user> 
-(let ((loop (lambda (x) (loop x))))
-  (loop 0))
-Evaluation encountered an error after 8 iterations
+(let ((loop (lambda () (loop))))
+  (loop))
+[6 iterations] => <Err UnboundVar>
 ```
 
 In a `let` expression, free variables are expected to be already available by, for instance, being defined on a previous binding.
+If we try to call `loop` when defining `loop`, it will be unbound.
 
 ```
 user> 
-(let ((loop (lambda (x) 42))
-      (loop (lambda (x) (loop x))))
-  (loop 0))
-[13 iterations] => 42
+(let ((not-a-loop (lambda () 42))
+      (not-a-loop (lambda () (not-a-loop))))
+  (not-a-loop))
+[8 iterations] => 42
 ```
 
-In the example above, the body of the second binding for `loop` simply calls the previous definition of `loop`.
+In the example above, the body of the second binding for `not-a-loop` simply calls the previous definition of `not-a-loop`.
 
 If we want to define recursive functions, we need to use `letrec`.
 
-Warning: the following expression actually loops forever!
-
 ```
 user> 
-(letrec ((loop (lambda (x) (loop x))))
-  (loop 0))
+(letrec ((loop (lambda () (loop))))
+  (loop))
+Error: Loop detected
 ```
 
 And now we can finally write a recursive function that computes the sum of the first `n` numbers.
@@ -260,7 +272,7 @@ user>
                                    0
                                    (+ n (sum-upto (- n 1)))))))
   (sum-upto 5))
-[92 iterations] => 15
+[54 iterations] => 15
 ```
 
 ## Higher-order functions
@@ -277,7 +289,7 @@ user>
                           (map f (cdr list))))))
          (square (lambda (x) (* x x))))
   (map square '(1 2 3 4 5)))
-[186 iterations] => (1 4 9 16 25)
+[76 iterations] => (1 4 9 16 25)
 ```
 
 By the way, how was the list `(1 2 3 4 5)` produced so easily?
