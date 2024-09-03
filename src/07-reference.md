@@ -6,7 +6,7 @@ This is a living specification of the current set of built-ins in the `.lurk` pa
 
 ### `nil`
 
-`nil` is boolean false ans also the empty list.
+`nil` is boolean false and can also represent the empty list.
 
 It has its own type differently from other symbols.
 
@@ -70,7 +70,7 @@ user> (bignum (commit 1))
 
 ### `car`
 
-`(car cons-cell)` returns the first element of its argument if it is a pair. Also works with lists and strings, returning its first element. Returns `<Err NotCons>` otherwise.
+`(car cons-cell)` returns the first element of its argument if it is a pair. Also works with strings, returning its first character. Returns `<Err NotCons>` otherwise.
 
 ```
 user> (car (cons 1 2))
@@ -85,7 +85,7 @@ user> (car "abc")
 
 ### `cdr`
 
-`(cdr cons-cell)` returns the second element of its argument if it is a pair. Also works with lists and strings, returning its remainder. Returns `<Err NotCons>` otherwise.
+`(cdr cons-cell)` returns the second element of its argument if it is a pair. Also works with strings, returning its tail. Returns `<Err NotCons>` otherwise.
 
 ```
 user> (cdr (cons 1 2))
@@ -139,7 +139,7 @@ user> (open (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494
 
 ### `cons`
 
-`(cons x y)` creates a new pair with first element `x` and second element `y`. The result of `(cons x y)` is also denoted by `(x . y)`.
+`(cons x y)` creates a new pair with first element `x` and second element `y`. The result of `(cons x y)` is denoted by `(x . y)` or simply `(x)` if `y` is nil.
 
 ```
 user> (eq (cons 1 nil) (cons 1 '()))
@@ -173,7 +173,7 @@ user> ((lambda (x) (current-env)) 1)
 
 ### `emit`
 
-`(emit x)` prints `x` to the output and return `x`.
+`(emit x)` prints `x` to the output and returns `x`.
 
 ```
 user> (emit 1)
