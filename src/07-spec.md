@@ -70,18 +70,32 @@ user> (bignum (commit 1))
 
 ### `car`
 
-`(car cons-cell)` returns the first element of its argument if it is a pair. Returns `<Err NotCons>` otherwise.
+`(car cons-cell)` returns the first element of its argument if it is a pair. Also works with lists and strings. Returns `<Err NotCons>` otherwise.
 
 ```
-
+user> (car (cons 1 2))
+[4 iterations] => 1
+user> (car '(1 2 3))
+[2 iterations] => 1
+user> (car (strcons 'a' "b"))
+[4 iterations] => 'a'
+user> (car "abc")
+[2 iterations] => 'a'
 ```
 
 ### `cdr`
 
-`(cdr cons-cell)` returns the second element of its argument if it is a pair. Returns `<Err NotCons>` otherwise.
+`(cdr cons-cell)` returns the second element of its argument if it is a pair. Also works with lists and strings, returning its remainder. Returns `<Err NotCons>` otherwise.
 
 ```
-
+user> (cdr (cons 1 2))
+[4 iterations] => 2
+user> (cdr '(1 2 3))
+[2 iterations] => (2 3)
+user> (cdr (strcons 'a' "b"))
+[4 iterations] => "b"
+user> (cdr "ab")
+[2 iterations] => "b"
 ```
 
 ### `char`
