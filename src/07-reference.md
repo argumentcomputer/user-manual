@@ -1,4 +1,4 @@
-# Language specification
+# Language reference
 
 This is a living specification of the current set of built-ins in the `.lurk` package.
 
