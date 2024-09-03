@@ -6,7 +6,7 @@ This is a living specification of the current set of built-ins in the `.lurk` pa
 
 ### `nil`
 
-`nil` is the empty list and used as boolean false. 
+`nil` is boolean false ans also the empty list.
 
 It has its own type differently from other symbols.
 
@@ -34,7 +34,7 @@ user> (if t "true" "false")
 
 ### `atom`
 
-`(atom x)` returns `nil` if `x` is a list or a pair, and `t` otherwise.
+`(atom x)` returns `nil` if `x` is a pair, and `t` otherwise.
 
 ```
 user> (atom nil)
@@ -70,7 +70,7 @@ user> (bignum (commit 1))
 
 ### `car`
 
-`(car cons-cell)` returns the first element of its argument if it is a pair. Also works with lists and strings. Returns `<Err NotCons>` otherwise.
+`(car cons-cell)` returns the first element of its argument if it is a pair. Also works with lists and strings, returning its first element. Returns `<Err NotCons>` otherwise.
 
 ```
 user> (car (cons 1 2))
