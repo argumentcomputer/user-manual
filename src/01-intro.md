@@ -1,5 +1,9 @@
 # Introduction
 
+<div style="text-align: center; margin-top: 20px;">
+  <img src="./lurk-logo.png" alt="Logo" style="width: 200px; height: auto;">
+</div>
+
 Lurk is a [verifiable](https://en.wikipedia.org/wiki/Verifiable_computing) [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)) influenced by [Scheme](https://www.scheme.org/) and [Common Lisp](https://lisp-lang.org/).
 As an application, it's capable of generating [zero-knowledge proofs](https://en.wikipedia.org/wiki/Zero-knowledge_proof) for the evaluation of arbitrary Lurk expressions.
 
