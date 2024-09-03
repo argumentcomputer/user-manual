@@ -49,7 +49,7 @@ user> (atom '(1 2 3))
 
 ### `begin`
 
-`(begin forms...)` evaluated each of its arguments in sequence and return the last evaluation.
+`(begin forms...)` evaluates each of its arguments in sequence and return the last evaluation.
 
 ```
 user> (begin 1 2 3)
@@ -201,7 +201,7 @@ user> (let ((x 1)) (eq (empty-env) (current-env)))
 
 ### `eval`
 
-`(eval form env)` evaluated `form` using `env` as its environment. `(eval form)` is equivalent to `(eval form (empty-env))`. Here `form` must be a quoted syntax tree of Lurk code.
+`(eval form env)` evaluates `form` using `env` as its environment. `(eval form)` is equivalent to `(eval form (empty-env))`. Here `form` must be a quoted syntax tree of Lurk code.
 
 ```
 user> (eval 1)
@@ -262,7 +262,7 @@ user> (type-eq '() '(1 2)) ;; this is surprisingly the case because `'()` is `ni
 
 ### `type-eqq`
 
-`(type-eqq x y)` returns `t` if `x` and `y` have the same type and `nil` otherwise. The difference is that `x` is treated as an unevaluated form instead of eagerly evaluating it. This usually means `x` is be some constant value.
+`(type-eqq x y)` returns `t` if `x` and `y` have the same type and `nil` otherwise. The difference is that `x` is treated as an un-evaluated form instead of eagerly evaluating it. This usually means `x` is be some constant value.
 
 ```
 user> (type-eqq 1 (+ 1 2))
