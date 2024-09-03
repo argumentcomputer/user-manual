@@ -2,7 +2,7 @@
 
 ## Setup
 
-Clone the [loam](https://github.com/argumentcomputer/loam) repository and run the following command inside its folder:
+Clone the [lurk](https://github.com/argumentcomputer/lurk) repository and run the following command inside its folder:
 
 ```
 $ cargo install --path .

@@ -8,3 +8,5 @@ This book explores Lurk from an usability standpoint, without deep diving into i
 We will start from installation instructions and then go through a gentle introduction to Lisp while building up the Lurk dialect as a means of designing systems in which parties can provably display possession of knowledge without disclosing it.
 
 The "Language reference" chapter can be used as a precise reference for experienced users.
+
+Note: this book is still work in progress.
