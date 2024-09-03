@@ -206,7 +206,7 @@ user> (let ((x 1)) (eq (empty-env) (current-env)))
 ```
 user> (eval 1)
 [3 iterations] => 1
-user> (eval (+ 1 2)) ;; this expands to `(eval 3)`
+user> (eval (+ 1 2)) ;; this expands to `(eval 3)` -- probably not what was intended!
 [5 iterations] => 3
 user> (eval '(+ 1 2)) ;; this will actually call `eval` with `'(+ 1 2)` as its argument
 [5 iterations] => 3
