@@ -102,6 +102,8 @@ user> (cdr "ab")
 
 `(char x)` tries to convert `x` to a character. Can be used with integers. Returns `<Err CantCastToChar>` if the types are incompatible.
 
+A char can store 32-bits of data, and this conversion truncates 64-bit integers into its 32 least significant bits.
+
 ```
 user> (char 0x41)
 [2 iterations] => 'A'
