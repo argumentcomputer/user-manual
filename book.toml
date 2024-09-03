@@ -7,7 +7,3 @@ title = "Lurk User Manual"
 
 [output.html]
 git-repository-url = "https://github.com/argumentcomputer/user-manual"
-
-[output.linkcheck]
-follow-web-links = true
-optional = true
