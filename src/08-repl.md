@@ -214,4 +214,4 @@ See above that the binding for `password` is visible in the claim's environment.
 Thus, such proof files are not meant to be shared.
 
 **The safe way to share proofs** is using the protocol API mentioned above, which creates proof files *designed* to be shared.
-This is because protocol proofs carry just enough information for the verifier to reconstruct the entire claim, and do not include unnecessary (and potentially private) information from the environment.
+This is because protocol proofs carry just enough information for the verifier to reconstruct the entire claim, and do not include unnecessary (and potentially private) information from the prover's REPL environment.
