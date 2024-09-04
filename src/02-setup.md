@@ -19,6 +19,10 @@ user>
 Having `lurk` installed can help the reader with experimentation while going through the book.
 More detailed information on the features of the `lurk` app will be presented on a later chapter.
 
+## Recommended tooling
+
+* [lurk-vscode](https://github.com/argumentcomputer/lurk-vscode) is an extension for VS Code that provides syntax highlighting and interactions with the Lurk REPL
+
 ## Support
 
 In case of any trouble, we are available on our [Zulip server](https://zulip.argument.xyz).
