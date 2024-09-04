@@ -191,3 +191,27 @@ user> !(prove-protocol simple-protocol "protocol-proof" 3n)
 ```
 
 The same check happens on the verifier side (of course!), which would be able to reject a proof generated with a maliciously edited REPL on the prover side.
+
+## Sharing proofs
+
+The proof files created with the `prove` meta command showcase Lurk's proving capabilities, but they may contain information that we don't want to disclose.
+
+```
+user> !(def password "some password")
+password
+user> !(def hash (hide (bignum (commit password)) "private data"))
+hash
+user> !(prove (begin (open hash) t))
+[5 iterations] => t
+Proof key: "50426c0c272d181e8e2248f7de943b92093fd2386d5a1ecb68956a3250bb7d"
+user> !(inspect "50426c0c272d181e8e2248f7de943b92093fd2386d5a1ecb68956a3250bb7d")
+Expr: (begin (open hash) t)
+Env: <Env ((hash . (comm #0x754a1c7a2f8d791e2896930cfb15fbce2ba61b92f4069f396d86e5addd28fb)) (password . "some password"))>
+Result: t
+```
+
+See above that the binding for `password` is visible in the claim's environment.
+Thus, such proof files are not meant to be shared.
+
+**The safe way to share proofs** is using the protocol API mentioned above, which creates proof files *designed* to be shared.
+This is so because protocol proofs carry just enough information for the verifier to reconstruct the entire claim.
