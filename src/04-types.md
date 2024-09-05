@@ -50,7 +50,7 @@ It has the same domain range of big nums.
 
 ```
 user> (comm #0x0)
-[2 iterations] => (comm #0x0)
+[2 iterations] => #c0x0
 ```
 
 ### Characters

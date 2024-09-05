@@ -56,7 +56,7 @@ For example, the following is accepted by Lurk.
 
 ```
 user> (commit (lambda (x) (+ x 1)))
-[2 iterations] => (comm #0x4384e08797d3cd0f911d844e137e54093460c295a4d71cf951259a9ff9712e)
+[2 iterations] => #c0x4384e08797d3cd0f911d844e137e54093460c295a4d71cf951259a9ff9712e
 user> (#0x4384e08797d3cd0f911d844e137e54093460c295a4d71cf951259a9ff9712e 10)
 [6 iterations] => 11
 ```
@@ -75,14 +75,14 @@ user>
                         (let ((counter (+ counter x)))
                           (cons counter (commit (add counter)))))))
           (add 0)))
-[6 iterations] => (comm #0x8ef25bc2228ca9799db65fd2b137a7b0ebccbfc04cf8530133e60087d403db)
+[6 iterations] => #c0x8ef25bc2228ca9799db65fd2b137a7b0ebccbfc04cf8530133e60087d403db
 ```
 
 And let's see what happens when we provide the argument `5` to it.
 
 ```
 user> (#0x8ef25bc2228ca9799db65fd2b137a7b0ebccbfc04cf8530133e60087d403db 5)
-[13 iterations] => (5 . (comm #0x6b2984a56dc2bbb61495c6fdf8076f0debf10ab2ae43aa1de45de64b460141))
+[13 iterations] => (5 . #c0x6b2984a56dc2bbb61495c6fdf8076f0debf10ab2ae43aa1de45de64b460141)
 ```
 
 We get the current counter result and the next callable (a functional commitment in this example).
@@ -90,7 +90,7 @@ So let's provide the argument `3` to this next callable.
 
 ```
 user> (#0x6b2984a56dc2bbb61495c6fdf8076f0debf10ab2ae43aa1de45de64b460141 3)
-[13 iterations] => (8 . (comm #0x75711244ea5c5bb0f46692db8851748d860f1e8d7e24a8bbf12caf6ed27c91))
+[13 iterations] => (8 . #c0x75711244ea5c5bb0f46692db8851748d860f1e8d7e24a8bbf12caf6ed27c91)
 ```
 
 The new result is `8` and we also get the next callable, as expected.
@@ -206,7 +206,7 @@ user> !(prove (begin (open hash) t))
 Proof key: "50426c0c272d181e8e2248f7de943b92093fd2386d5a1ecb68956a3250bb7d"
 user> !(inspect "50426c0c272d181e8e2248f7de943b92093fd2386d5a1ecb68956a3250bb7d")
 Expr: (begin (open hash) t)
-Env: <Env ((hash . (comm #0x754a1c7a2f8d791e2896930cfb15fbce2ba61b92f4069f396d86e5addd28fb)) (password . "some password"))>
+Env: <Env ((hash . #c0x754a1c7a2f8d791e2896930cfb15fbce2ba61b92f4069f396d86e5addd28fb) (password . "some password"))>
 Result: t
 ```
 
