@@ -119,10 +119,10 @@ user> (char nil)
 
 ```
 user> (commit 1)
-[2 iterations] => (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb)
-user> (open (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb))
+[2 iterations] => #c0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb
+user> (open #c0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb)
 [3 iterations] => 1
-user> (secret (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb))
+user> (secret #c0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb)
 [3 iterations] => #0x0
 ```
 
@@ -132,10 +132,10 @@ user> (secret (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a4
 
 ```
 user> (comm #0x0)
-[2 iterations] => (comm #0x0)
+[2 iterations] => #c0x0
 user> (bignum (comm #0x0))
 [3 iterations] => #0x0
-user> (open (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb))
+user> (open #c0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb)
 [3 iterations] => 1
 ```
 
@@ -281,10 +281,10 @@ user> (type-eqq (+ 1 2) (cons 1 2))
 
 ```
 user> (hide #0x123 456)
-[3 iterations] => (comm #0x6abde5983eb1b904d3b4fa40700307e835f99547043ccec37a7be641aad3ce)
-user> (open (comm #0x6abde5983eb1b904d3b4fa40700307e835f99547043ccec37a7be641aad3ce))
+[3 iterations] => #c0x6abde5983eb1b904d3b4fa40700307e835f99547043ccec37a7be641aad3ce
+user> (open #c0x6abde5983eb1b904d3b4fa40700307e835f99547043ccec37a7be641aad3ce)
 [3 iterations] => 456
-user> (secret (comm #0x6abde5983eb1b904d3b4fa40700307e835f99547043ccec37a7be641aad3ce))
+user> (secret #c0x6abde5983eb1b904d3b4fa40700307e835f99547043ccec37a7be641aad3ce)
 [3 iterations] => #0x123
 ```
 
@@ -370,7 +370,7 @@ user> (open (hide #0x123 2))
 [4 iterations] => 2
 user> (open #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb)
 [2 iterations] => 1
-user> (open (comm #0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb))
+user> (open #c0x35ff7b6fb1e777a95aadced4e080fa9c024a47d7b1f81d217fa04a2a494fbb)
 [3 iterations] => 1
 ```
 
@@ -406,7 +406,7 @@ user> (secret (hide #0x123 2))
 [4 iterations] => #0x123
 user> (secret #0x93ac209775c37ba61db238500fb84e528807ae21d523a1e51a7b1be05d23dc)
 [2 iterations] => #0x123
-user> (secret (comm #0x93ac209775c37ba61db238500fb84e528807ae21d523a1e51a7b1be05d23dc))
+user> (secret #c0x93ac209775c37ba61db238500fb84e528807ae21d523a1e51a7b1be05d23dc)
 [3 iterations] => #0x123
 ```
 
