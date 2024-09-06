@@ -202,7 +202,7 @@ password
 user> !(def hash (hide (bignum (commit password)) "private data"))
 hash
 user> !(prove (begin (open hash) t))
-[5 iterations] => t
+[4 iterations] => t
 Proof key: "50426c0c272d181e8e2248f7de943b92093fd2386d5a1ecb68956a3250bb7d"
 user> !(inspect "50426c0c272d181e8e2248f7de943b92093fd2386d5a1ecb68956a3250bb7d")
 Expr: (begin (open hash) t)

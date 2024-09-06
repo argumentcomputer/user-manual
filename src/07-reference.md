@@ -49,14 +49,15 @@ user> (atom '(1 2 3))
 
 ### `begin`
 
-`(begin forms...)` evaluates each of its arguments in sequence and return the last evaluation.
+`(begin e1 e2 ... en)` evaluates `e1`, `e2`, ..., `en` and returns the reduced version of `en`.
+It is particularly useful when we want to manifest side-effects when evaluating the inner expressions `e1`, `e2`, ...
 
 ```
 user> (begin 1 2 3)
-[6 iterations] => 3
+[4 iterations] => 3
 user> ((lambda (x) (begin (emit x) (+ x x))) 1)
 1
-[8 iterations] => 2
+[7 iterations] => 2
 ```
 
 ### `bignum`
@@ -156,6 +157,17 @@ user> (cons 1 '(2 3))
 [3 iterations] => (1 2 3)
 ```
 
+### `list`
+
+`(list e1 e2 ... en)` creates a list with the reduced versions of `e1`, `e2`, ..., `en`.
+
+```
+user> (list)
+[1 iteration] => nil
+user> (list (+ 1 1) "hi")
+[4 iterations] => (2 "hi")
+```
+
 ### `current-env`
 
 `(current-env)` returns the current environment. The current environment can be modified by `let`, `letrec` and `lambda` expressions.
@@ -185,7 +197,7 @@ user> (let ((f (lambda (x) (emit x)))) (begin (f 1) (f 2) (f 3)))
 1
 2
 3
-[18 iterations] => 3
+[16 iterations] => 3
 ```
 
 ### `empty-env`
