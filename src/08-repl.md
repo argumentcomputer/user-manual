@@ -124,16 +124,15 @@ user>
 !(defprotocol simple-protocol (n)
   (cons
     ;; claim definition
-    (cons (cons (cons '= (cons n (cons n nil)))
-                (empty-env))
+    (cons (cons (list '= n n) (empty-env))
           't)
     ;; post-verification predicate is not provided
     nil)
   :description "(= n n) reduces to t")
 ```
 
-`(cons '= (cons n (cons n nil)))` may look strange for now, but it's creating the Lurk expression `(= <n> <n>)` on the fly.
-We will talk about this later.
+`(list '= n n)` creates the Lurk expression `(= <n> <n>)` on the fly.
+More on this later.
 
 That protocol can be persisted on the file system and shared.
 
@@ -153,7 +152,17 @@ And then prove it for, say, the number `3`.
 
 ```
 user> !(prove-protocol simple-protocol "protocol-proof" 3)
+Proof key: "5cbadfcf4634ed1d8ce00ef342235fd0e89363c3982cd1636f6a47cec0c48a"
 Protocol proof saved at protocol-proof
+```
+
+Let's inspect the (cached) proof we've just created.
+
+```
+user> !(inspect "5cbadfcf4634ed1d8ce00ef342235fd0e89363c3982cd1636f6a47cec0c48a")
+Expr: (= 3 3)
+Env: <Env ()>
+Result: t
 ```
 
 Now the prover sends the `protocol-proof` file to the verifier, who can verify it.
@@ -173,9 +182,8 @@ user>
   (cons
     (if (type-eqq 0 n)
       ;; return a claim if n is indeed u64
-      (cons (cons (cons '= (cons n (cons n nil)))
-                  (empty-env))
-            't)
+      (cons (cons (list '= n n) (empty-env))
+          't)
       ;; the following nil makes the protocol reject the proof
       nil)
     ;; again, no post-verification predicate
