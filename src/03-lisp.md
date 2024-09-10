@@ -5,7 +5,7 @@ Since Lurk is a Lisp, it has practically no syntax and expressions can be formed
 The expression `3` is self-evaluating.
 
 ```
-user> 3
+lurk-user> 3
 [1 iteration] => 3
 ```
 
@@ -16,64 +16,54 @@ In the simplest case of a self-evaluating expression, only a single iteration is
 Characters and strings are also self-evaluating.
 
 ```
-user> 'a'
+lurk-user> 'a'
 [1 iteration] => 'a'
-user> "abc"
+lurk-user> "abc"
 [1 iteration] => "abc"
 ```
 
-Lists are evaluated by treating the first element as a potential function (more on functions later) and the rest as its arguments.
+Lists are evaluated by treating the first element as an operator and the rest as operands.
 
 ```
-user> (+ 2 3)
+lurk-user> (+ 2 3)
 [3 iterations] => 5
 ```
 
-Technically, `+` is a built-in operator: it does not evaluate to a Lurk function but behaves like one here.
-
-Built-in operators cannot be independently evaluated.
-
-```
-user> +
-[1 iteration] => <Err NonConstantBuiltin>
-```
+An operator can be either a built-in operator or an expression that evaluates to a function (more on this later).
 
 A list whose first element is neither a built-in operator nor evaluates to a function yields an error when evaluated.
 
 ```
-user> (1 2 3)
+lurk-user> (1 2 3)
 [2 iterations] => <Err ApplyNonFunc>
 ```
-
-This is because lists are evaluated by first evaluating each element of the list (in order), then treating the first result as a function to be applied to the remaining.
-The case above triggers an error because the number `1` does not name a function nor an operator.
 
 ## `nil` and `t`
 
 `nil` and `t` are self-evaluating symbols.
 
 ```
-user> nil
+lurk-user> nil
 [1 iteration] => nil
-user> t
+lurk-user> t
 [1 iteration] => t
 ```
 
 `nil` carries the semantics of "false".
 
 ```
-user> (= 1 2)
+lurk-user> (= 1 2)
 [3 iterations] => nil
-user> (if nil 1 2)
+lurk-user> (if nil 1 2)
 [3 iterations] => 2
 ```
 
 `t` carries the semantics of "true".
 
 ```
-user> (= 1 1)
+lurk-user> (= 1 1)
 [2 iterations] => t
-user> (if t 1 2)
+lurk-user> (if t 1 2)
 [3 iterations] => 1
 ```
 
@@ -82,14 +72,14 @@ user> (if t 1 2)
 Pairs are constructed with `cons`, and their elements are separated by a `.` when printed.
 
 ```
-user> (cons 1 2)
+lurk-user> (cons 1 2)
 [3 iterations] => (1 . 2)
 ```
 
 A pair whose second element is `nil` is said to form a list with one element.
 
 ```
-user> (cons 1 nil)
+lurk-user> (cons 1 nil)
 [3 iterations] => (1)
 ```
 
@@ -97,7 +87,7 @@ Note that `nil` is elided when printing lists.
 We can left-expand this list by consing an element as its new head.
 
 ```
-user> (cons 0 (cons 1 nil))
+lurk-user> (cons 0 (cons 1 nil))
 [5 iterations] => (0 1)
 ```
 
@@ -106,27 +96,27 @@ Thus, within this design, `nil` can be used to represent the empty list.
 To deconstruct a pair, we can use `car` and `cdr`, which return the first and the second element respectively.
 
 ```
-user> (car (cons 1 2))
+lurk-user> (car (cons 1 2))
 [4 iterations] => 1
-user> (cdr (cons 1 2))
+lurk-user> (cdr (cons 1 2))
 [4 iterations] => 2
 ```
 
 And in our abstraction of lists, we say that `car` and `cdr` return the list's head and tail respectively.
 
 ```
-user> (car (cons 0 (cons 1 nil)))
+lurk-user> (car (cons 0 (cons 1 nil)))
 [6 iterations] => 0
-user> (cdr (cons 0 (cons 1 nil)))
+lurk-user> (cdr (cons 0 (cons 1 nil)))
 [6 iterations] => (1)
 ```
 
 By definition, `(car nil)` and `(cdr nil)` return `nil`.
 
 ```
-user> (car nil)
+lurk-user> (car nil)
 [2 iterations] => nil
-user> (cdr nil)
+lurk-user> (cdr nil)
 [2 iterations] => nil
 ```
 
@@ -135,37 +125,37 @@ user> (cdr nil)
 A Lurk function can be created by using the `lambda` built-in operator, which requires a list of arguments and a body.
 
 ```
-user> (lambda (x) (+ x 1))
+lurk-user> (lambda (x) (+ x 1))
 [1 iteration] => <Fun (x) (+ x 1)>
 ```
 
 Then we can write function applications by using lists, as mentioned before.
 
 ```
-user> ((lambda (x) (+ x 1)) 10)
+lurk-user> ((lambda (x) (+ x 1)) 10)
 [6 iterations] => 11
 ```
 
 Functions with multiple arguments follow the same input design.
 
 ```
-user> ((lambda (x y) (+ x y)) 3 5)
+lurk-user> ((lambda (x y) (+ x y)) 3 5)
 [7 iterations] => 8
 ```
 
 Lurk supports partial applications, so we can apply arguments one by one if we want.
 
 ```
-user> (((lambda (x y) (+ x y)) 3) 5)
+lurk-user> (((lambda (x y) (+ x y)) 3) 5)
 [8 iterations] => 8
 ```
 
 A function may also be defined to not need any arguments.
 
 ```
-user> (lambda () nil)
+lurk-user> (lambda () nil)
 [1 iteration] => <Fun () nil>
-user> ((lambda () nil))
+lurk-user> ((lambda () nil))
 [3 iterations] => nil
 ```
 
@@ -180,14 +170,14 @@ We'll come back to recursive functions in a bit.
 First, let's see how `let` allows us to introduce varible bindings.
 
 ```
-user> (let ((a 1)) a)
+lurk-user> (let ((a 1)) a)
 [3 iterations] => 1
 ```
 
 `let` consumes a list of bindings and the final expression, which can use the introduced variables (or not).
 
 ```
-user> 
+lurk-user> 
 (let ((a 1)
       (b 2)
       (c 3))
@@ -198,7 +188,7 @@ user>
 When defining the value bound to a variable, we can use the variables that were previously bound.
 
 ```
-user> 
+lurk-user> 
 (let ((a 1)
       (b (+ a 1)))
   b)
@@ -208,7 +198,7 @@ user>
 Later bindings shadow previous ones.
 
 ```
-user>
+lurk-user>
 (let ((a 1)
       (a 2))
   a)
@@ -218,7 +208,7 @@ user>
 And inner bindings shadow outer ones.
 
 ```
-user> 
+lurk-user> 
 (let ((a 1))
   (let ((a 2)) a))
 [5 iterations] => 2
@@ -227,7 +217,7 @@ user>
 Now we can bind functions to variables.
 
 ```
-user>
+lurk-user>
 (let ((succ (lambda (x) (+ x 1))))
   (succ 10))
 [8 iterations] => 11
@@ -236,7 +226,7 @@ user>
 So, can we create a looping recursive function yet?
 
 ```
-user> 
+lurk-user> 
 (let ((loop (lambda () (loop))))
   (loop))
 [6 iterations] => <Err UnboundVar>
@@ -246,7 +236,7 @@ In a `let` expression, free variables are expected to be already available by, f
 If we try to call `loop` when defining `loop`, it will be unbound.
 
 ```
-user> 
+lurk-user> 
 (let ((not-a-loop (lambda () 42))
       (not-a-loop (lambda () (not-a-loop))))
   (not-a-loop))
@@ -258,7 +248,7 @@ In the example above, the body of the second binding for `not-a-loop` simply cal
 If we want to define recursive functions, we need to use `letrec`.
 
 ```
-user> 
+lurk-user> 
 (letrec ((loop (lambda () (loop))))
   (loop))
 Error: Loop detected
@@ -267,7 +257,7 @@ Error: Loop detected
 And now we can finally write a recursive function that computes the sum of the first `n` numbers.
 
 ```
-user> 
+lurk-user> 
 (letrec ((sum-upto (lambda (n) (if (= n 0)
                                    0
                                    (+ n (sum-upto (- n 1)))))))
@@ -281,7 +271,7 @@ Lurk supports [Higher-order functions](https://en.wikipedia.org/wiki/Higher-orde
 That is, Lurk functions can receive functions as input and return functions as output, allowing for a wide range of expressive functional programming idioms.
 
 ```
-user> 
+lurk-user> 
 (letrec ((map (lambda (f list)
                 (if (eq list nil)
                     nil
@@ -302,13 +292,13 @@ We've seen that trying to reduce `(1 2 3)` doesn't work.
 But if we want Lurk not to face that list as a function application, we can use *quoting*.
 
 ```
-user> (quote (1 2 3))
+lurk-user> (quote (1 2 3))
 [1 iteration] => (1 2 3)
 ```
 
 And we can use `'` as syntax sugar for brevity.
 
 ```
-user> '(1 2 3)
+lurk-user> '(1 2 3)
 [1 iteration] => (1 2 3)
 ```
