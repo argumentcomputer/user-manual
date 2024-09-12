@@ -13,7 +13,7 @@ This will make the `lurk` binary globally accessible from your terminal:
 ```
 $ lurk
 Lurk REPL welcomes you.
-user> 
+lurk-user> 
 ```
 
 Having `lurk` installed can help the reader with experimentation while going through the book.
