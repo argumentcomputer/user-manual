@@ -441,7 +441,14 @@ lurk-user> (cons 'a' "bc")
 
 ### `breakpoint`
 
-`(breakpoint)` places a debugger break point at the current evaluation state. `(breakpoint x)` sets a breakpoint and returns `x`. `!(help debug)` for more information on the built-in debugger.
+`(breakpoint)` places a debugger breakpoint at the current evaluation state and returns `nil`.
+`(breakpoint x)` places a debugger breakpoint and returns `x`, reduced.
+
+`!(help debug)` for more information on the native debugger.
+
+### `fail`
+
+`(fail)` errors out from evaluation, unprovably.
 
 ## Built-in numeric operators
 
