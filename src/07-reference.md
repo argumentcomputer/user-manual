@@ -66,7 +66,7 @@ lurk-user> ((lambda (x) (begin (emit x) (+ x x))) 1)
 
 ```
 lurk-user> (bignum (commit 1))
-[3 iterations] => #0x8f1deaa5f6031277a6a5a7e0f35f15ef42da64b1e203769982da26038f1e25
+[3 iterations] => #0xf99d96623838468091ce6590ccb3b829938823d964f3f5962f837f1400e2b
 ```
 
 ### `car`
@@ -120,10 +120,10 @@ lurk-user> (char nil)
 
 ```
 lurk-user> (commit 1)
-[2 iterations] => #c0x8f1deaa5f6031277a6a5a7e0f35f15ef42da64b1e203769982da26038f1e25
-lurk-user> (open #c0x8f1deaa5f6031277a6a5a7e0f35f15ef42da64b1e203769982da26038f1e25)
+[2 iterations] => #c0xf99d96623838468091ce6590ccb3b829938823d964f3f5962f837f1400e2b
+lurk-user> (open #c0xf99d96623838468091ce6590ccb3b829938823d964f3f5962f837f1400e2b)
 [3 iterations] => 1
-lurk-user> (secret #c0x8f1deaa5f6031277a6a5a7e0f35f15ef42da64b1e203769982da26038f1e25)
+lurk-user> (secret #c0xf99d96623838468091ce6590ccb3b829938823d964f3f5962f837f1400e2b)
 [3 iterations] => #0x0
 ```
 
@@ -291,10 +291,10 @@ lurk-user> (type-eqq (+ 1 2) (cons 1 2))
 
 ```
 lurk-user> (hide #0x123 456)
-[3 iterations] => #c0x7834e8081d1317cce4dd8c9098e417bbf248ac0b997772a96980c00686e7e0
-lurk-user> (open #c0x7834e8081d1317cce4dd8c9098e417bbf248ac0b997772a96980c00686e7e0)
+[3 iterations] => #c0x4420657169325d52f910f0ffe606b3a7b600a982691926b207f21350120d3d
+lurk-user> (open #c0x4420657169325d52f910f0ffe606b3a7b600a982691926b207f21350120d3d)
 [3 iterations] => 456
-lurk-user> (secret #c0x7834e8081d1317cce4dd8c9098e417bbf248ac0b997772a96980c00686e7e0)
+lurk-user> (secret #c0x4420657169325d52f910f0ffe606b3a7b600a982691926b207f21350120d3d)
 [3 iterations] => #0x123
 ```
 
@@ -376,11 +376,9 @@ lurk-user> (u64 nil)
 ```
 lurk-user> (open (commit 1))
 [3 iterations] => 1
-lurk-user> (open (hide #0x123 2))
-[4 iterations] => 2
-lurk-user> (open #0x8f1deaa5f6031277a6a5a7e0f35f15ef42da64b1e203769982da26038f1e25)
+lurk-user> (open #c0xf99d96623838468091ce6590ccb3b829938823d964f3f5962f837f1400e2b)
 [2 iterations] => 1
-lurk-user> (open #c0x8f1deaa5f6031277a6a5a7e0f35f15ef42da64b1e203769982da26038f1e25)
+lurk-user> (open #0xf99d96623838468091ce6590ccb3b829938823d964f3f5962f837f1400e2b)
 [2 iterations] => 1
 ```
 
@@ -414,9 +412,9 @@ lurk-user> (secret (commit 1))
 [3 iterations] => #0x0
 lurk-user> (secret (hide #0x123 2))
 [4 iterations] => #0x123
-lurk-user> (secret #0x7a9196fa4cb9236389fdbd2feb108986d4d668c8caad347f4334c6b147cb67)
+lurk-user> (secret #c0x76cc74360d9492188f072ecdafd2ddf50fadac0ce2007c551c09fdcd556109)
 [2 iterations] => #0x123
-lurk-user> (secret #c0x7a9196fa4cb9236389fdbd2feb108986d4d668c8caad347f4334c6b147cb67)
+lurk-user> (secret #0x76cc74360d9492188f072ecdafd2ddf50fadac0ce2007c551c09fdcd556109)
 [2 iterations] => #0x123
 ```
 
