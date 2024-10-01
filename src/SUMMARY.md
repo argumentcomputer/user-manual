@@ -9,3 +9,4 @@
 - [Language reference](07-reference.md)
 - [The REPL](08-repl.md)
 - [Stepping up](09-advanced.md)
+- [Extending Lurk](10-lang.md)

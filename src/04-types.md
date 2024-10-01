@@ -128,6 +128,10 @@ lurk-user> (type-eq 'cons 'x)
 [3 iterations] => nil
 ```
 
+### Coroutines
+
+Symbols specified in a `Lang` used to call coroutines (more on this later).
+
 ### Functions
 
 Functions are the result of evaluated `lambda` expressions.

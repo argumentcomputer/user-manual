@@ -475,7 +475,7 @@ lurk-user> (cons 'a' "bc")
 
 ### `+`
 
-`(+ a b)` returns the sum of `a` and `b`. Overflow can happen implicitly. Returns `<Err ArgNotNumber>` if the types are not compatible.
+`(+ a b)` returns the sum of `a` and `b`. Overflow can happen implicitly. Returns `<Err InvalidArg>` if the types are not compatible.
 
 ```
 lurk-user> (+ 1 2)
@@ -483,14 +483,14 @@ lurk-user> (+ 1 2)
 lurk-user> (+ 1n 2n)
 [3 iterations] => 3n
 lurk-user> (+ #0x1 #0x2) ;; no big num arithmetic yet
-[3 iterations] => <Err ArgNotNumber>
+[3 iterations] => <Err InvalidArg>
 lurk-user> (+ 18446744073709551615 18446744073709551615)
 [2 iterations] => 18446744073709551614 ;; implicit overflow for u64
 ```
 
 ### `-`
 
-`(- a b)` returns the difference between `a` and `b`. Underflow can happen implicitly. Returns `<Err ArgNotNumber>` if the types are not compatible.
+`(- a b)` returns the difference between `a` and `b`. Underflow can happen implicitly. Returns `<Err InvalidArg>` if the types are not compatible.
 
 ```
 lurk-user> (- 2 1)
@@ -505,7 +505,7 @@ lurk-user> (- 0n 1n)
 
 ### `*`
 
-`(* a b)` returns the product of `a` and `b`. Overflow can happen implicitly. Returns `<Err ArgNotNumber>` if the types are not compatible.
+`(* a b)` returns the product of `a` and `b`. Overflow can happen implicitly. Returns `<Err InvalidArg>` if the types are not compatible.
 
 ```
 lurk-user> (* 2 3)
@@ -518,7 +518,7 @@ lurk-user> (* 18446744073709551615 18446744073709551615)
 
 ### `/`
 
-`(/ a b)` returns the quotient between `a` and `b`. Returns `<Err ArgNotNumber>` if the types are not compatible. Returns `<Err DivByZero>` if `b` is zero.
+`(/ a b)` returns the quotient between `a` and `b`. Returns `<Err InvalidArg>` if the types are not compatible. Returns `<Err DivByZero>` if `b` is zero.
 
 When `a` and `b` are integers, the fractional part of the result is truncated and the result is the usual integer division.
 
@@ -558,7 +558,7 @@ lurk-user> (+ (* 2 6) 3)
 
 ### `=`
 
-`(= a b)` returns `t` if `a` and `b` are equal and `nil` otherwise. The arguments must be numeric. Returns `<Err ArgNotNumber>` if the types are not compatible.
+`(= a b)` returns `t` if `a` and `b` are equal and `nil` otherwise. The arguments must be numeric. Returns `<Err InvalidArg>` if the types are not compatible.
 
 ```
 lurk-user> (= 123 123)
@@ -568,16 +568,16 @@ lurk-user> (= 123n 123n)
 lurk-user> (= #0x123 #0x123)
 [2 iterations] => t
 lurk-user> (= "abc" "abc")
-[2 iterations] => <Err ArgNotNumber>
+[2 iterations] => <Err InvalidArg>
 ```
 
 ### `<`
 
-`(< a b)` returns `t` if `a` is strictly less than `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err ArgNotNumber>` if the types are not compatible. Note that native field elements cannot be compared like this.
+`(< a b)` returns `t` if `a` is strictly less than `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err InvalidArg>` if the types are not compatible. Note that native field elements cannot be compared like this.
 
 ```
 lurk-user> (< "a" "b")
-[3 iterations] => <Err ArgNotNumber>
+[3 iterations] => <Err InvalidArg>
 lurk-user> (< 1n 2n)
 [3 iterations] => <Err NotU64>
 lurk-user> (< #0x123 #0x456)
@@ -588,7 +588,7 @@ lurk-user> (< 123 456)
 
 ### `>`
 
-`(> a b)` returns `t` if `a` is strictly greater than `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err ArgNotNumber>` if the types are not compatible. Note that native field elements cannot be compared like this.
+`(> a b)` returns `t` if `a` is strictly greater than `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err InvalidArg>` if the types are not compatible. Note that native field elements cannot be compared like this.
 
 ```
 lurk-user> (> #0x123 #0x456)
@@ -599,7 +599,7 @@ lurk-user> (> 456 123)
 
 ### `<=`
 
-`(<= a b)` returns `t` if `a` is less than or equal to `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err ArgNotNumber>` if the types are not compatible. Note that native field elements cannot be compared like this.
+`(<= a b)` returns `t` if `a` is less than or equal to `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err InvalidArg>` if the types are not compatible. Note that native field elements cannot be compared like this.
 
 ```
 lurk-user> (<= #0x123 #0x456)
@@ -610,7 +610,7 @@ lurk-user> (<= 123 123)
 
 ### `>=`
 
-`(>= a b)` returns `t` if `a` is greater than or equal to `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err ArgNotNumber>` if the types are not compatible. Note that native field elements cannot be compared like this.
+`(>= a b)` returns `t` if `a` is greater than or equal to `b` and `nil` otherwise. The arguments must be numeric. Returns `<Err InvalidArg>` if the types are not compatible. Note that native field elements cannot be compared like this.
 
 ```
 lurk-user> (>= #0x123 #0x456)
