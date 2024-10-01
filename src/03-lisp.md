@@ -143,6 +143,19 @@ lurk-user> ((lambda (x y) (+ x y)) 3 5)
 [7 iterations] => 8
 ```
 
+Variadic functions are supported by adding `&rest <var>` at the end of the arguments list, which binds a list of all remaining parameters to `<var>`.
+
+```
+lurk-user> ((lambda (&rest x) x))
+[3 iterations] => nil
+lurk-user> ((lambda (&rest x) x) 1 2 3)
+[6 iterations] => (1 2 3)
+lurk-user> ((lambda (x y &rest z) z) 1 2 3)
+[6 iterations] => (3)
+lurk-user> ((lambda (x y &rest z) z) 1 2)
+[5 iterations] => nil
+```
+
 Lurk supports partial applications, so we can apply arguments one by one if we want.
 
 ```

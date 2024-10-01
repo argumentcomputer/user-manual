@@ -47,6 +47,21 @@ lurk-user> (atom '(1 2 3))
 [2 iterations] => nil
 ```
 
+### `apply`
+
+`(apply f args)` will call `f` with the argument list `args` and return its result. `args` must be a list.
+
+```
+lurk-user> (apply (lambda (x y z) (+ x (+ y z))) '(1 2 3))
+[11 iterations] => 6
+lurk-user> (apply (lambda (x y z) (+ x (+ y z))) (list 1 2 3))
+[11 iterations] => 6
+lurk-user> ((apply (lambda (x y z) (+ x (+ y z))) (list 1 2)) 3) ;; partial application also works
+[12 iterations] => 6
+lurk-user> (apply (lambda (x) x) 1)
+[3 iterations] => <Err ArgsNotList>
+```
+
 ### `begin`
 
 `(begin e1 e2 ... en)` evaluates `e1`, `e2`, ..., `en` and returns the reduced version of `en`.
@@ -317,6 +332,8 @@ lurk-user> (if 0 "true") ;; note: `0` is *not* `nil`
 
 `(lambda (args...) body)` creates a function that takes a list of arguments and returns the result of evaluating `body` by binding the variable bindings to the supplied arguments. A function is called when it is in the head of a list.
 
+The list of arguments can optionally end with `&rest <var>`, which denotes that any remaining arguments, if present, are bound to `<var>` as a list.
+
 ```
 lurk-user> (lambda () 1)
 [1 iteration] => <Fun () 1>
@@ -330,6 +347,12 @@ lurk-user> ((lambda (x y z) (+ x (+ y z))) 1 2 3)
 [10 iterations] => 6
 lurk-user> (let ((f (lambda (x y z) (+ x (+ y z))))) (+ (f 1 2 3) (f 3 2 1))) ;; here `f` is the variable bound to the `lambda`
 [19 iterations] => 12
+lurk-user> ((lambda (x y &rest z) z) 1 2 3)
+[6 iterations] => (3)
+lurk-user> ((lambda (x y &rest z) z) 1 2)
+[5 iterations] => nil
+lurk-user> ((lambda (&rest x) x))
+[3 iterations] => nil
 ```
 
 ### `let`
