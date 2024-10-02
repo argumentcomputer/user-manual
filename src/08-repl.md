@@ -56,8 +56,8 @@ For example, the following is accepted by Lurk.
 
 ```
 lurk-user> (commit (lambda (x) (+ x 1)))
-[2 iterations] => #c0x1471db9125f186dc43467642fccf39121096fbe733384ea00b69e1800b1aae
-lurk-user> (#c0x1471db9125f186dc43467642fccf39121096fbe733384ea00b69e1800b1aae 10)
+[2 iterations] => #c0x1f4971f046cd9b037eadbc3fcde177431a712e8cef82fcec9e010fc5a65891
+lurk-user> (#c0x1f4971f046cd9b037eadbc3fcde177431a712e8cef82fcec9e010fc5a65891 10)
 [6 iterations] => 11
 ```
 
@@ -75,22 +75,22 @@ lurk-user>
                         (let ((counter (+ counter x)))
                           (cons counter (commit (add counter)))))))
           (add 0)))
-[6 iterations] => #c0x4b0eb13f048385909480e765f4eefec94c304edf9e01b2170869c9cdf8eb11
+[6 iterations] => #c0x8b0d8bd2feef87f7347a8d2dbe7cc74ba045ec0f14c1417266e3f46d0a0ac5
 ```
 
 And let's see what happens when we provide the argument `5` to it.
 
 ```
-lurk-user> (#c0x4b0eb13f048385909480e765f4eefec94c304edf9e01b2170869c9cdf8eb11 5)
-[13 iterations] => (5 . #c0x43f23a52a844a74f53f564c7234a6fa265afacd228c7a1b12167d542cc34e3)
+lurk-user> (#c0x8b0d8bd2feef87f7347a8d2dbe7cc74ba045ec0f14c1417266e3f46d0a0ac5 5)
+[13 iterations] => (5 . #c0x60b9491bb451ddac036e2b9e77256da893f505c3b480b477599b1bfcb6f334)
 ```
 
 We get the current counter result and the next callable (a functional commitment in this example).
 So let's provide the argument `3` to this next callable.
 
 ```
-lurk-user> (#c0x43f23a52a844a74f53f564c7234a6fa265afacd228c7a1b12167d542cc34e3 3)
-[13 iterations] => (8 . #c0x784468987da6dd9cbb1f43d265c906f8f3e4c7503cf26b031aa51176a457c1)
+lurk-user> (#c0x60b9491bb451ddac036e2b9e77256da893f505c3b480b477599b1bfcb6f334 3)
+[13 iterations] => (8 . #c0x4570f0489268d7f99f28b99aaa00ac16fa422e5c67d9eb20da573a071f2873)
 ```
 
 The new result is `8` and we also get the next callable, as expected.
@@ -152,14 +152,14 @@ And then prove it for, say, the number `3`.
 
 ```
 lurk-user> !(prove-protocol simple-protocol "protocol-proof" 3)
-Proof key: "702b71f40deacfc4167be5493b1df1a6dd4cd7e56e4fc25d6f21114255b8df"
+Proof key: "56b674aa77c68bdc916a01c122da092f7a5fdc9fd0b13646382f80bebcbe99"
 Protocol proof saved at protocol-proof
 ```
 
 Let's inspect the (cached) proof we've just created.
 
 ```
-lurk-user> !(inspect "702b71f40deacfc4167be5493b1df1a6dd4cd7e56e4fc25d6f21114255b8df")
+lurk-user> !(inspect "56b674aa77c68bdc916a01c122da092f7a5fdc9fd0b13646382f80bebcbe99")
 Expr: (= 3 3)
 Env: <Env ()>
 Result: t
@@ -211,8 +211,8 @@ lurk-user> !(def hash (hide (bignum (commit password)) "private data"))
 hash
 lurk-user> !(prove (begin (open hash) t))
 [4 iterations] => t
-Proof key: "468985a2f4691664335d87793144d0b9b7531acb06841ac725474910985927"
-lurk-user> !(inspect "468985a2f4691664335d87793144d0b9b7531acb06841ac725474910985927")
+Proof key: "6e45ffb851078d6abf90a5d9b434ae34f2aad64d0e5880ca9c0189737f4a9e"
+lurk-user> !(inspect "6e45ffb851078d6abf90a5d9b434ae34f2aad64d0e5880ca9c0189737f4a9e")
 Expr: (begin (open hash) t)
 Env: <Env ((hash . #c0x145c99908adac10ee79eb5e1d74ad8fe42c10abe79f5ef3d5dbb96915cc7a3) (password . "some password"))>
 Result: t

@@ -126,7 +126,7 @@ A Lurk function can be created by using the `lambda` built-in operator, which re
 
 ```
 lurk-user> (lambda (x) (+ x 1))
-[1 iteration] => <Fun (x) (+ x 1)>
+[1 iteration] => <Fun (x) ((+ x 1))>
 ```
 
 Then we can write function applications by using lists, as mentioned before.
@@ -167,7 +167,7 @@ A function may also be defined to not need any arguments.
 
 ```
 lurk-user> (lambda () nil)
-[1 iteration] => <Fun () nil>
+[1 iteration] => <Fun () (nil)>
 lurk-user> ((lambda () nil))
 [3 iterations] => nil
 ```

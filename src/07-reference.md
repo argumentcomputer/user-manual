@@ -349,9 +349,9 @@ The list of arguments can optionally end with `&rest <var>`, which denotes that 
 
 ```
 lurk-user> (lambda () 1)
-[1 iteration] => <Fun () 1>
+[1 iteration] => <Fun () (1)>
 lurk-user> (lambda (x) x)
-[1 iteration] => <Fun (x) x>
+[1 iteration] => <Fun (x) (x)>
 lurk-user> ((lambda () 1)) 
 [3 iterations] => 1
 lurk-user> ((lambda (x) x) 1)
@@ -368,6 +368,15 @@ lurk-user> ((lambda (&rest x) x))
 [3 iterations] => nil
 ```
 
+Evaluating the body happens as if there were a `begin` surrounding it.
+
+```
+lurk-user> ((lambda () (emit 1) (emit 2)))
+1
+2
+[6 iterations] => 2
+```
+
 ### `let`
 
 `(let ((var binding)...) body)` extends the current environment with a set of variable bindings and then evaluate `body` in the updated environment. `let` is used for binding values to names and modifying environments. See also the `def` REPL meta command.
@@ -377,6 +386,15 @@ lurk-user> (let ((x 1) (y 2)) (+ x y))
 [6 iterations] => 3
 lurk-user> (let ((x 1) (y 2)) (current-env))
 [4 iterations] => <Env ((y . 2) (x . 1))>
+```
+
+Similarly to `lambda`, the body is interpreted as if there were a `begin` surrounding it.
+
+```
+lurk-user> (let ((a 1) (b 2)) (emit a) (emit b))
+1
+2
+[7 iterations] => 2
 ```
 
 ### `letrec`
@@ -390,6 +408,15 @@ lurk-user> (letrec ((x 1)) (current-env))
 [3 iterations] => <Env ((x . <Thunk 1>))> ;; Thunks are the internal representation used for recursive evaluation
 lurk-user> (letrec ((last (lambda (x) (if (cdr x) (last (cdr x)) (car x))))) (last '(1 2 3)))
 [19 iterations] => 3
+```
+
+Similarly to `let`, the body is interpreted as if there were a `begin` surrounding it.
+
+```
+lurk-user> (letrec ((a 1) (b 2)) (emit a) (emit b))
+1
+2
+[7 iterations] => 2
 ```
 
 ### `u64`
