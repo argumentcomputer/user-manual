@@ -56,16 +56,16 @@ Again, we can commit to *any* Lurk data, including functions.
 
 ```
 lurk-user> (commit (lambda (x) (+ 7 (* x x))))
-[2 iterations] => #c0x6cea5bb3cb63a9bd119d5d00e40807e717e6b98c645ac25aae60ed35255b07
+[2 iterations] => #c0x64411a93ff0183cdbe7c2d0dbbbd69ac7b47c75aa1124a901207f3f47d0ce4
 ```
 
 The above is a commitment to a function that squares its input then adds seven.
 Then we can open it and apply arguments as usual.
 
 ```
-lurk-user> ((open #c0x6cea5bb3cb63a9bd119d5d00e40807e717e6b98c645ac25aae60ed35255b07) 5)
+lurk-user> ((open #c0x64411a93ff0183cdbe7c2d0dbbbd69ac7b47c75aa1124a901207f3f47d0ce4) 5)
 [8 iterations] => 32
-lurk-user> ((open #c0x6cea5bb3cb63a9bd119d5d00e40807e717e6b98c645ac25aae60ed35255b07) 9)
+lurk-user> ((open #c0x64411a93ff0183cdbe7c2d0dbbbd69ac7b47c75aa1124a901207f3f47d0ce4) 9)
 [8 iterations] => 88
 ```
 
@@ -80,14 +80,14 @@ lurk-user>
 (let ((secret-data 222)
       (data-interface (lambda (f) (f secret-data))))
   (commit data-interface))
-[5 iterations] => #c0x4b672917bfcbef3c73e01e50a500f2947d9378f6a1ec19588bc7fd3766f81d
+[5 iterations] => #c0x21aa7ddf7089aa62c98717d2634cf8d414f9b7b2d36c46d6a360ba754beff1
 ```
 
 Now we can open it, applying it to a function that adds `111` to the secret value that the committed function hides.
 
 ```
 lurk-user>
-((open #c0x4b672917bfcbef3c73e01e50a500f2947d9378f6a1ec19588bc7fd3766f81d)
+((open #c0x21aa7ddf7089aa62c98717d2634cf8d414f9b7b2d36c46d6a360ba754beff1)
  (lambda (data) (+ data 111)))
 [10 iterations] => 333
 ```
