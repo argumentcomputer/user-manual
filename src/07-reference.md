@@ -249,7 +249,7 @@ lurk-user> (eval 'x (let ((x 1)) (current-env)))
 
 ### `eq`
 
-`(eq x y)` returns `t` if `x` is equal to `y` and `nil` otherwise.
+`(eq x y)` returns `t` if `x` and `y`, after both being reduced, are equal and `nil` otherwise.
 
 ```
 lurk-user> (eq 1 (- 2 1))
@@ -266,9 +266,20 @@ lurk-user> (eq (cons 1 2) (cons 2 1))
 [7 iterations] => nil
 ```
 
+### `eqq`
+
+`(eqq x y)` returns `t` if `x` and `y`, after only reducing `y`, are equal and `nil` otherwise.
+
+Note: the second "q" in `eqq` is a reference to "quote" because `(eqq x y)` is equivalent to `(eq (quote x) y)`.
+
+```
+lurk-user> (eqq (1 . 2) (cons 1 2))
+[4 iterations] => t
+```
+
 ### `type-eq`
 
-`(type-eq x y)` returns `t` if `x` and `y` have the same type and `nil` otherwise.
+`(type-eq x y)` returns `t` if `x` and `y`, after both being reduced, have the same type and `nil` otherwise.
 
 ```
 lurk-user> (type-eq 1 2)
@@ -289,7 +300,9 @@ lurk-user> (type-eq '() '(1 2)) ;; this is surprisingly the case because `'()` i
 
 ### `type-eqq`
 
-`(type-eqq x y)` returns `t` if `x` and `y` have the same type and `nil` otherwise. The difference is that `x` is treated as an un-evaluated form instead of eagerly evaluating it. This usually means `x` is be some constant value.
+`(type-eqq x y)` returns `t` if `x` and `y`, after only reducing `y`, have the same type and `nil` otherwise.
+
+Note: the second "q" in `type-eqq` is a reference to "quote" because `(type-eqq x y)` is equivalent to `(type-eq (quote x) y)`.
 
 ```
 lurk-user> (type-eqq 1 (+ 1 2))
