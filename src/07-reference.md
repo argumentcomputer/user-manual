@@ -379,7 +379,7 @@ lurk-user> ((lambda () (emit 1) (emit 2)))
 
 ### `let`
 
-`(let ((var binding) ...) body)` extends the current environment with a set of variable bindings and then evaluate `body` in the updated environment.
+`(let ((var binding) ...) body)` extends the current environment with a set of variable bindings and then evaluates `body` in the updated environment.
 `let` is used for binding values to names and modifying environments.
 See also the `def` REPL meta command.
 
