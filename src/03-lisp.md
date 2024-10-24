@@ -180,7 +180,7 @@ But how do we name functions?
 ### Bindings
 
 We'll come back to recursive functions in a bit.
-First, let's see how `let` allows us to introduce varible bindings.
+First, let's see how `let` allows us to introduce variable bindings.
 
 ```
 lurk-user> (let ((a 1)) a)
@@ -275,7 +275,7 @@ lurk-user>
                                    0
                                    (+ n (sum-upto (- n 1)))))))
   (sum-upto 5))
-[54 iterations] => 15
+[55 iterations] => 15
 ```
 
 ## Higher-order functions
@@ -292,7 +292,7 @@ lurk-user>
                           (map f (cdr list))))))
          (square (lambda (x) (* x x))))
   (map square '(1 2 3 4 5)))
-[76 iterations] => (1 4 9 16 25)
+[78 iterations] => (1 4 9 16 25)
 ```
 
 By the way, how was the list `(1 2 3 4 5)` produced so easily?

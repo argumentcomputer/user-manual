@@ -193,7 +193,7 @@ lurk-user> (current-env)
 lurk-user> (let ((x 1)) (current-env))
 [3 iterations] => <Env ((x . 1))>
 lurk-user> (letrec ((x 1)) (current-env))
-[3 iterations] => <Env ((x . <Thunk 1>))>
+[4 iterations] => <Env ((x . <Thunk 1>))>
 lurk-user> ((lambda (x) (current-env)) 1)
 [4 iterations] => <Env ((x . 1))>
 ```
@@ -379,7 +379,9 @@ lurk-user> ((lambda () (emit 1) (emit 2)))
 
 ### `let`
 
-`(let ((var binding)...) body)` extends the current environment with a set of variable bindings and then evaluate `body` in the updated environment. `let` is used for binding values to names and modifying environments. See also the `def` REPL meta command.
+`(let ((var binding) ...) body)` extends the current environment with a set of variable bindings and then evaluates `body` in the updated environment.
+`let` is used for binding values to names and modifying environments.
+See also the `def` REPL meta command.
 
 ```
 lurk-user> (let ((x 1) (y 2)) (+ x y))
@@ -399,15 +401,23 @@ lurk-user> (let ((a 1) (b 2)) (emit a) (emit b))
 
 ### `letrec`
 
-`(letrec ((var binding)...) body)` is similar to `let`, but it enables recursion by allowing references to `var` inside its own `binding`. Generally, the binding is be a `lambda` expression representing a recursive function. See also the `defrec` REPL meta command.
+`(letrec ((var binding) ...) body)` is similar to `let`, but it enables mutually recursive bindings.
+See also the `defrec` REPL meta command.
 
 ```
 lurk-user> (letrec ((x 1)) x)
-[3 iterations] => 1
+[4 iterations] => 1
 lurk-user> (letrec ((x 1)) (current-env))
-[3 iterations] => <Env ((x . <Thunk 1>))> ;; Thunks are the internal representation used for recursive evaluation
-lurk-user> (letrec ((last (lambda (x) (if (cdr x) (last (cdr x)) (car x))))) (last '(1 2 3)))
-[19 iterations] => 3
+[4 iterations] => <Env ((x . <Thunk 1>))> ;; Thunks are the internal representation used for recursive evaluation
+lurk-user>
+(letrec ((last (lambda (x) (if (cdr x) (last (cdr x)) (car x)))))
+  (last '(1 2 3)))
+[20 iterations] => 3
+lurk-user>
+(letrec ((odd? (lambda (n) (if (= n 0) nil (even? (- n 1)))))
+         (even? (lambda (n) (if (= n 0) t (odd? (- n 1))))))
+  (odd? 5))
+[53 iterations] => t
 ```
 
 Similarly to `let`, the body is interpreted as if there were a `begin` surrounding it.
@@ -416,7 +426,7 @@ Similarly to `let`, the body is interpreted as if there were a `begin` surroundi
 lurk-user> (letrec ((a 1) (b 2)) (emit a) (emit b))
 1
 2
-[7 iterations] => 2
+[9 iterations] => 2
 ```
 
 ### `u64`

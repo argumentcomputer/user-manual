@@ -2,6 +2,8 @@
 
 Let's explore more of this tool we've been interacting with, the Lurk REPL.
 
+## Meta commands
+
 Until now, every Lurk expression we've evaluated was evaluated under an empty environment.
 Trying to evaluate a dangling `a` would trigger an error indicating an unbound variable.
 
@@ -40,14 +42,41 @@ And it can also provide further help on specific meta commands.
 lurk-user> !(help def)
 def - Extends env with a non-recursive binding.
   Info:
-    Gets macroexpanded to (let ((<symbol> <value>)) (current-env)).
+    Gets macroexpanded to (let ((<symbol> <expr>)) (current-env)).
     The REPL's env is set to the result.
-  Usage: !(def <symbol> <value>)
+  Format: !(def <symbol> <expr>)
   Example:
     !(def foo (lambda () 123))
+  Returns: The binding symbol
 ```
 
-However, we need to go over a few abstractions in order to understand some meta commands you may encounter.
+As hinted above, meta commands have return values.
+That's because we can build expressions that contain meta commands.
+The meta commands will be evaluated first, having their occurrences in the original expression replaced by their respective return values.
+The resulting expression is then evaluated.
+
+```
+lurk-user> (+ !(def b 21) b)
+b
+[2 iterations] => 42
+```
+
+When processing `(+ !(def b 21) b)`, `!(def b 21)` is evaluated, which adds `b` to the environment and returns the symbol `b`.
+The resulting expression is `(+ b b)`, which, once evaluated, results in `42`.
+
+To double check which expression was evaluated, you can enter the debug mode with `!(debug)` (make sure to check `!(help debug)`!).
+
+This is what the debug mode shows:
+
+```
+?0: (+ b b)
+?1: b
+ 1: b ↦ 21
+!1: b ↦ 21
+ 0: (+ b b) ↦ 42
+```
+
+Now, let's go over a few abstractions in order to understand some meta commands you will encounter.
 
 ## Chaining callables
 
@@ -75,22 +104,22 @@ lurk-user>
                         (let ((counter (+ counter x)))
                           (cons counter (commit (add counter)))))))
           (add 0)))
-[6 iterations] => #c0x8b0d8bd2feef87f7347a8d2dbe7cc74ba045ec0f14c1417266e3f46d0a0ac5
+[7 iterations] => #c0x64fee21bad514ff18399dfc5066caebf34acc0441c9af675ba95a998077591
 ```
 
 And let's see what happens when we provide the argument `5` to it.
 
 ```
-lurk-user> (#c0x8b0d8bd2feef87f7347a8d2dbe7cc74ba045ec0f14c1417266e3f46d0a0ac5 5)
-[13 iterations] => (5 . #c0x60b9491bb451ddac036e2b9e77256da893f505c3b480b477599b1bfcb6f334)
+lurk-user> (#c0x64fee21bad514ff18399dfc5066caebf34acc0441c9af675ba95a998077591 5)
+[14 iterations] => (5 . #c0x73c6bd6ffb74c34b7c21e83aaaf71ddf919bb2a9c93ecb43c656f8dc67060a)
 ```
 
 We get the current counter result and the next callable (a functional commitment in this example).
 So let's provide the argument `3` to this next callable.
 
 ```
-lurk-user> (#c0x60b9491bb451ddac036e2b9e77256da893f505c3b480b477599b1bfcb6f334 3)
-[13 iterations] => (8 . #c0x4570f0489268d7f99f28b99aaa00ac16fa422e5c67d9eb20da573a071f2873)
+lurk-user> (#c0x73c6bd6ffb74c34b7c21e83aaaf71ddf919bb2a9c93ecb43c656f8dc67060a 3)
+[14 iterations] => (8 . #c0x67dfd6673beec5f6758e3404d74af882f66b1084adabb97bc27cba554def07)
 ```
 
 The new result is `8` and we also get the next callable, as expected.
