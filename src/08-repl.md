@@ -145,7 +145,8 @@ That's a 0-arg function that uses the protocol arguments to validate a claim *af
 This is useful when there's a check that needs to happen that's more expensive than verifying the proof.
 Such a check would fit well as a post-verification predicate.
 
-Now let's write a protocol that receives a number `n` and proves that `n = n` under the empty environment.
+Now let's write a protocol in which a proof is accepted iff it proves that `n = n` for a given `n`.
+In Lurk terms, the claim for such a proof is that `(= n n)` reduces to `t` under the empty environment.
 This shouldn't be a hard task for any prover who accepts the challenge, but it's a good starting example.
 
 ```
