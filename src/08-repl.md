@@ -142,7 +142,7 @@ And a protocol may also reject a proof by returning `nil` instead of a claim.
 
 The last bit of information before we go over a simple example is that a protocol can also define a post-verification predicate.
 That's a 0-arg function that uses the protocol arguments to validate a claim *after* verification happens.
-This is useful when there's an expensive check that needs to happen that's more expensive than verifying the proof.
+This is useful when there's a check that needs to happen that's more expensive than verifying the proof.
 Such a check would fit well as a post-verification predicate.
 
 Now let's write a protocol that receives a number `n` and proves that `n = n` under the empty environment.
@@ -154,7 +154,7 @@ lurk-user>
   (cons
     ;; claim definition
     (cons (cons (list '= n n) (empty-env))
-          't)
+          t)
     ;; post-verification predicate is not provided
     nil)
   :description "(= n n) reduces to t")
@@ -167,13 +167,13 @@ That protocol can be persisted on the file system and shared.
 
 ```
 lurk-user> !(dump-expr simple-protocol "simple-protocol-file")
-Data persisted at simple-protocol-file
+Data persisted on file `simple-protocol-file`
 ```
 
 Some prover out there can download the protocol and load it from their file system.
 
 ```
-lurk-user> !(load-expr simple-protocol "simple-protocol-file")
+lurk-user> !(defq simple-protocol !(load-expr "simple-protocol-file"))
 simple-protocol
 ```
 
@@ -182,7 +182,7 @@ And then prove it for, say, the number `3`.
 ```
 lurk-user> !(prove-protocol simple-protocol "protocol-proof" 3)
 Proof key: "56b674aa77c68bdc916a01c122da092f7a5fdc9fd0b13646382f80bebcbe99"
-Protocol proof saved at protocol-proof
+Protocol proof saved on file `protocol-proof`
 ```
 
 Let's inspect the (cached) proof we've just created.
@@ -212,7 +212,7 @@ lurk-user>
     (if (type-eqq 0 n)
       ;; return a claim if n is indeed u64
       (cons (cons (list '= n n) (empty-env))
-          't)
+            t)
       ;; the following nil makes the protocol reject the proof
       nil)
     ;; again, no post-verification predicate
